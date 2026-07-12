@@ -1,0 +1,50 @@
+version: '3.8'
+
+services:
+  database:
+    image: mongo:latest
+    container_name: meditracker-db
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongo-data:/data/db
+    networks:
+      - meditracker-network
+
+  backend:
+    build: ./backend
+    container_name: meditracker-backend
+    ports:
+      - "5000:5000"
+    environment:
+      - PORT=5000
+      - MONGODB_URI=mongodb://database:27017/meditracker
+      - JWT_SECRET=meditracker_super_secret_jwt_key_12345
+      - EMAIL_USER=test@example.com
+      - EMAIL_PASS=testpass123
+      - FRONTEND_URL=http://localhost
+      - NODE_ENV=production
+    depends_on:
+      - database
+    networks:
+      - meditracker-network
+
+  frontend:
+    build: ./frontend
+    container_name: meditracker-frontend
+    ports:
+      - "80:80"
+    environment:
+      - VITE_API_URL=http://localhost:5000/api
+      - VITE_SOCKET_URL=http://localhost:5000
+    depends_on:
+      - backend
+    networks:
+      - meditracker-network
+
+volumes:
+  mongo-data:
+
+networks:
+  meditracker-network:
+    driver: bridge
