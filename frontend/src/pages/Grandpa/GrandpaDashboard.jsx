@@ -11,7 +11,7 @@ const GrandpaDashboard = () => {
   const [schedules, setSchedules] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
-  const [greeting, setGreeting] = useState('Good Morning Grandpa ❤️');
+  const [greeting, setGreeting] = useState('Good Morning  ❤️');
   const [spokenScheduleId, setSpokenScheduleId] = useState(null);
   
   // Alarm state
