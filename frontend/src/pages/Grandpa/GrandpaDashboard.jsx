@@ -44,9 +44,9 @@ const GrandpaDashboard = () => {
 
     // Setup greeting based on hour
     const hour = new Date().getHours();
-    if (hour < 12) setGreeting('Good Morning Grandpa ❤️');
-    else if (hour < 17) setGreeting('Good Afternoon Grandpa ❤️');
-    else setGreeting('Good Evening Grandpa ❤️');
+    if (hour < 12) setGreeting('Good Morning ❤️');
+    else if (hour < 17) setGreeting('Good Afternoon ❤️');
+    else setGreeting('Good Evening ❤️');
 
     return () => {
       clearInterval(pollInterval);
