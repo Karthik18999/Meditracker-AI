@@ -364,8 +364,32 @@ const FamilyDashboard = () => {
         )}
       </AnimatePresence>
 
-      {/* Side Navigation Bar */}
-      <aside className="w-full md:w-64 bg-white dark:bg-slate-900 border-r border-slate-200 dark:border-slate-800 p-6 flex flex-col justify-between shrink-0">
+      {/* Mobile Top Header */}
+      <header className="md:hidden bg-white dark:bg-slate-900 border-b border-slate-200 dark:border-slate-800 px-4 py-3 flex justify-between items-center sticky top-0 z-40">
+        <div className="flex items-center gap-2.5">
+          <div className="p-1.5 bg-emerald-500/10 text-emerald-500 rounded-lg">
+            <Heart className="w-5 h-5 fill-emerald-500/20" />
+          </div>
+          <span className="font-extrabold text-lg bg-gradient-to-r from-emerald-600 to-teal-500 bg-clip-text text-transparent dark:from-emerald-400 dark:to-teal-300">
+            MediTracker AI
+          </span>
+        </div>
+        <div className="flex items-center gap-2">
+          <div className="w-8 h-8 rounded-full bg-emerald-500/20 text-emerald-600 dark:text-emerald-400 flex items-center justify-center font-bold text-xs">
+            {user?.name?.charAt(0)?.toUpperCase()}
+          </div>
+          <button
+            onClick={logout}
+            className="p-2 text-slate-500 hover:text-red-500 rounded-lg text-xs transition-colors"
+            title="Logout"
+          >
+            <LogOut className="w-4 h-4" />
+          </button>
+        </div>
+      </header>
+
+      {/* Side Navigation Bar (Desktop) */}
+      <aside className="hidden md:flex w-64 bg-white dark:bg-slate-900 border-r border-slate-200 dark:border-slate-800 p-6 flex-col justify-between shrink-0">
         <div>
           <div className="flex items-center gap-3 mb-8">
             <div className="p-2 bg-emerald-500/10 text-emerald-500 rounded-xl">
@@ -422,8 +446,39 @@ const FamilyDashboard = () => {
         </div>
       </aside>
 
+      {/* Mobile Bottom Navigation Bar */}
+      <nav className="md:hidden fixed bottom-0 inset-x-0 z-40 bg-white/95 dark:bg-slate-900/95 backdrop-blur-md border-t border-slate-200 dark:border-slate-800 px-1 py-1.5 flex justify-around items-center shadow-lg">
+        {[
+          { id: 'overview', label: 'Overview', icon: TrendingUp },
+          { id: 'medicines', label: 'Meds', icon: PlusCircle },
+          { id: 'inventory', label: 'Stock', icon: ShieldAlert },
+          { id: 'care', label: 'Doctors', icon: Stethoscope },
+          { id: 'reports', label: 'Reports', icon: FileText },
+          { id: 'chatbot', label: 'AI Helper', icon: Bot },
+        ].map(tab => {
+          const Icon = tab.icon;
+          const isActive = activeTab === tab.id;
+          return (
+            <button
+              key={tab.id}
+              onClick={() => setActiveTab(tab.id)}
+              className={`flex flex-col items-center py-1 px-2 rounded-xl transition-all ${
+                isActive 
+                  ? 'text-emerald-600 dark:text-emerald-400 font-bold' 
+                  : 'text-slate-500 dark:text-slate-400 font-medium'
+              }`}
+            >
+              <div className={`p-1 rounded-lg ${isActive ? 'bg-emerald-500/15' : ''}`}>
+                <Icon className="w-5 h-5" />
+              </div>
+              <span className="text-[10px] mt-0.5 tracking-tighter">{tab.label}</span>
+            </button>
+          );
+        })}
+      </nav>
+
       {/* Main Panel Content Area */}
-      <main className="flex-1 p-6 md:p-8 overflow-y-auto max-h-screen">
+      <main className="flex-1 p-4 sm:p-6 md:p-8 pb-24 md:pb-8 overflow-y-auto max-h-screen">
         
         {/* Error notification header */}
         {error && (
