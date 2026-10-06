@@ -7,7 +7,8 @@ const Contact = require('../models/Contact');
  */
 const getContacts = async (req, res, next) => {
   try {
-    const contacts = await Contact.find({ userId: req.user.id });
+    const userId = req.targetUserId || req.user.id;
+    const contacts = await Contact.find({ userId });
     res.status(200).json({ success: true, count: contacts.length, data: contacts });
   } catch (error) {
     next(error);
@@ -23,9 +24,11 @@ const createContact = async (req, res, next) => {
   const { name, relation, phone, email, isPrimary } = req.body;
 
   try {
+    const userId = req.targetUserId || req.user.id;
+
     // If setting as primary, demote existing primary contacts
     if (isPrimary) {
-      await Contact.updateMany({ userId: req.user.id }, { isPrimary: false });
+      await Contact.updateMany({ userId }, { isPrimary: false });
     }
 
     const contact = await Contact.create({
@@ -34,7 +37,7 @@ const createContact = async (req, res, next) => {
       phone,
       email,
       isPrimary: isPrimary || false,
-      userId: req.user.id,
+      userId,
     });
 
     res.status(201).json({ success: true, data: contact });
@@ -58,13 +61,15 @@ const updateContact = async (req, res, next) => {
       return res.status(404).json({ success: false, message: 'Contact not found' });
     }
 
-    if (contact.userId.toString() !== req.user.id) {
+    const userId = req.targetUserId || req.user.id;
+
+    if (contact.userId.toString() !== userId.toString()) {
       return res.status(401).json({ success: false, message: 'Not authorized' });
     }
 
     // If setting as primary, demote existing primary contacts
     if (isPrimary) {
-      await Contact.updateMany({ userId: req.user.id }, { isPrimary: false });
+      await Contact.updateMany({ userId }, { isPrimary: false });
     }
 
     contact = await Contact.findByIdAndUpdate(req.params.id, req.body, {
@@ -91,7 +96,9 @@ const deleteContact = async (req, res, next) => {
       return res.status(404).json({ success: false, message: 'Contact not found' });
     }
 
-    if (contact.userId.toString() !== req.user.id) {
+    const userId = req.targetUserId || req.user.id;
+
+    if (contact.userId.toString() !== userId.toString()) {
       return res.status(401).json({ success: false, message: 'Not authorized' });
     }
 

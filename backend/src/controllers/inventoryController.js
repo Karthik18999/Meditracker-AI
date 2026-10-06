@@ -7,7 +7,8 @@ const Inventory = require('../models/Inventory');
  */
 const getInventory = async (req, res, next) => {
   try {
-    const inventory = await Inventory.find({ userId: req.user.id })
+    const userId = req.targetUserId || req.user.id;
+    const inventory = await Inventory.find({ userId })
       .populate('medicineId', 'name dosage type color');
     res.status(200).json({ success: true, count: inventory.length, data: inventory });
   } catch (error) {
@@ -22,8 +23,9 @@ const getInventory = async (req, res, next) => {
  */
 const getInventoryByMedicine = async (req, res, next) => {
   try {
+    const userId = req.targetUserId || req.user.id;
     const inventory = await Inventory.findOne({
-      userId: req.user.id,
+      userId,
       medicineId: req.params.medicineId
     }).populate('medicineId', 'name dosage type color');
 
@@ -50,8 +52,10 @@ const updateInventory = async (req, res, next) => {
       return res.status(404).json({ success: false, message: 'Inventory record not found' });
     }
 
+    const userId = req.targetUserId || req.user.id;
+
     // Check ownership
-    if (inventory.userId.toString() !== req.user.id) {
+    if (inventory.userId.toString() !== userId.toString()) {
       return res.status(401).json({ success: false, message: 'Not authorized' });
     }
 

@@ -18,13 +18,14 @@ const protect = async (req, res, next) => {
       }
 
       req.user = currentUser;
+      req.targetUserId = currentUser._id;
 
-      // Transparently route grandpa requests to the linked family account
+      // Transparently route grandpa requests to the linked family account for data operations
       if (currentUser.role === 'grandpa' && currentUser.familyEmail) {
         const familyUser = await User.findOne({ email: currentUser.familyEmail });
         if (familyUser) {
           req.grandpaUser = currentUser;
-          req.user._id = familyUser._id; // This also overrides req.user.id getter
+          req.targetUserId = familyUser._id;
         }
       }
       next();

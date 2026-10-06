@@ -41,7 +41,7 @@ const calculateRefillPredictions = async (userId) => {
  */
 const getAIInsights = async (req, res, next) => {
   try {
-    const userId = req.user.id;
+    const userId = req.targetUserId || req.user.id;
 
     // Get compliance metrics
     const schedules = await MedicineSchedule.find({ userId });
@@ -115,7 +115,7 @@ const handleChatQuery = async (req, res, next) => {
   }
 
   try {
-    const userId = req.user.id;
+    const userId = req.targetUserId || req.user.id;
     const query = question.toLowerCase();
 
     // Gather context

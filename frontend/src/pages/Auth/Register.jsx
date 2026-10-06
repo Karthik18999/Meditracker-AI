@@ -31,31 +31,7 @@ const Register = () => {
     setError('');
     setSubmitting(true);
     try {
-      // Pass familyEmail so it registers on the User model
-      const tokenUser = await register(name, email, password, role);
-      
-      // If registering Grandpa, we also save familyEmail
-      if (role === 'grandpa') {
-        const token = localStorage.getItem('token');
-        const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000/api';
-        
-        // Call custom update to save the familyEmail after creation
-        // (Alternatively, the registerUser controller saves it if we pass it)
-        // Wait, does the register controller support familyEmail?
-        // Let's check authController: registerUser accepts name, email, password, role from body.
-        // It does not explicitly list familyEmail!
-        // Wait, let's verify if our register controller handles it.
-        // Ah! In authController.js:
-        // const { name, email, password, role } = req.body;
-        // It does NOT destructure familyEmail! Let's check. Yes, it destructures:
-        // const { name, email, password, role } = req.body;
-        // And then:
-        // const user = await User.create({ name, email, password, role: role || 'family' });
-        // So familyEmail is NOT saved!
-        // Oh, let's fix authController.js to accept and save familyEmail as well!
-        // That is a critical catch! Let's update registerUser in authController to save familyEmail.
-        // But first let's finish coding the frontend register.
-      }
+      await register(name, email, password, role, familyEmail);
 
       if (role === 'grandpa') {
         navigate('/grandpa');

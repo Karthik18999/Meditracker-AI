@@ -93,7 +93,8 @@ const createTodaySchedules = async (userId, medicine) => {
  */
 const getMedicines = async (req, res, next) => {
   try {
-    const medicines = await Medicine.find({ userId: req.user.id });
+    const userId = req.targetUserId || req.user.id;
+    const medicines = await Medicine.find({ userId });
     res.status(200).json({ success: true, count: medicines.length, data: medicines });
   } catch (error) {
     next(error);
@@ -128,6 +129,8 @@ const createMedicine = async (req, res, next) => {
   } = req.body;
 
   try {
+    const userId = req.targetUserId || req.user.id;
+
     const medicine = await Medicine.create({
       name,
       dosage,
@@ -140,13 +143,13 @@ const createMedicine = async (req, res, next) => {
       color,
       type,
       imageUrl,
-      userId: req.user.id,
+      userId,
     });
 
     // Create inventory record
     const inventory = await Inventory.create({
       medicineId: medicine._id,
-      userId: req.user.id,
+      userId,
       currentStock: currentStock || 0,
       minStock: minStock || 10,
       dosePerDay: dosePerDay || (Number(isMorning) + Number(isAfternoon) + Number(isNight) + (customTimes ? customTimes.length : 0)) || 1,
@@ -156,7 +159,7 @@ const createMedicine = async (req, res, next) => {
     });
 
     // Seed schedule for today immediately
-    await createTodaySchedules(req.user.id, medicine);
+    await createTodaySchedules(userId, medicine);
 
     res.status(201).json({
       success: true,
@@ -183,8 +186,10 @@ const updateMedicine = async (req, res, next) => {
       return res.status(404).json({ success: false, message: 'Medicine not found' });
     }
 
+    const userId = req.targetUserId || req.user.id;
+
     // Check ownership
-    if (medicine.userId.toString() !== req.user.id && req.user.role !== 'grandpa') {
+    if (medicine.userId.toString() !== userId.toString()) {
       return res.status(401).json({ success: false, message: 'Not authorized' });
     }
 
@@ -194,7 +199,7 @@ const updateMedicine = async (req, res, next) => {
     });
 
     // Refresh today's schedules with updated times/settings
-    await createTodaySchedules(req.user.id, medicine);
+    await createTodaySchedules(userId, medicine);
 
     res.status(200).json({ success: true, data: medicine });
   } catch (error) {
@@ -215,8 +220,10 @@ const deleteMedicine = async (req, res, next) => {
       return res.status(404).json({ success: false, message: 'Medicine not found' });
     }
 
+    const userId = req.targetUserId || req.user.id;
+
     // Check ownership
-    if (medicine.userId.toString() !== req.user.id) {
+    if (medicine.userId.toString() !== userId.toString()) {
       return res.status(401).json({ success: false, message: 'Not authorized' });
     }
 

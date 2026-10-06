@@ -33,7 +33,7 @@ const seedSchedulesIfEmpty = async (userId) => {
  */
 const getTodaySchedules = async (req, res, next) => {
   try {
-    const userId = req.user.id;
+    const userId = req.targetUserId || req.user.id;
     await seedSchedulesIfEmpty(userId);
 
     const today = new Date();
@@ -189,7 +189,7 @@ const triggerEmergency = async (req, res, next) => {
   const { latitude, longitude } = req.body;
 
   try {
-    const userId = req.user.id;
+    const userId = req.targetUserId || req.user.id;
 
     // Create notification
     const locationString = latitude && longitude 
@@ -245,7 +245,8 @@ const triggerEmergency = async (req, res, next) => {
  */
 const getNotifications = async (req, res, next) => {
   try {
-    const notifications = await Notification.find({ userId: req.user.id })
+    const userId = req.targetUserId || req.user.id;
+    const notifications = await Notification.find({ userId })
       .sort({ createdAt: -1 })
       .limit(50);
     res.status(200).json({ success: true, count: notifications.length, data: notifications });
@@ -261,7 +262,8 @@ const getNotifications = async (req, res, next) => {
  */
 const readAllNotifications = async (req, res, next) => {
   try {
-    await Notification.updateMany({ userId: req.user.id, read: false }, { read: true });
+    const userId = req.targetUserId || req.user.id;
+    await Notification.updateMany({ userId, read: false }, { read: true });
     res.status(200).json({ success: true, message: 'Notifications marked read' });
   } catch (error) {
     next(error);
@@ -275,7 +277,7 @@ const readAllNotifications = async (req, res, next) => {
  */
 const getReportData = async (req, res, next) => {
   try {
-    const userId = req.user.id;
+    const userId = req.targetUserId || req.user.id;
 
     // Fetch all logs to run metrics
     const logs = await MedicineLog.find({ userId }).populate('medicineId');

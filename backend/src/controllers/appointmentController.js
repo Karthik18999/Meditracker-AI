@@ -7,7 +7,8 @@ const Appointment = require('../models/Appointment');
  */
 const getAppointments = async (req, res, next) => {
   try {
-    const appointments = await Appointment.find({ userId: req.user.id })
+    const userId = req.targetUserId || req.user.id;
+    const appointments = await Appointment.find({ userId })
       .sort({ visitDate: -1 });
     res.status(200).json({ success: true, count: appointments.length, data: appointments });
   } catch (error) {
@@ -22,9 +23,10 @@ const getAppointments = async (req, res, next) => {
  */
 const createAppointment = async (req, res, next) => {
   try {
+    const userId = req.targetUserId || req.user.id;
     const appointment = await Appointment.create({
       ...req.body,
-      userId: req.user.id,
+      userId,
     });
     res.status(201).json({ success: true, data: appointment });
   } catch (error) {
@@ -45,7 +47,9 @@ const updateAppointment = async (req, res, next) => {
       return res.status(404).json({ success: false, message: 'Appointment not found' });
     }
 
-    if (appointment.userId.toString() !== req.user.id) {
+    const userId = req.targetUserId || req.user.id;
+
+    if (appointment.userId.toString() !== userId.toString()) {
       return res.status(401).json({ success: false, message: 'Not authorized' });
     }
 
@@ -73,7 +77,9 @@ const deleteAppointment = async (req, res, next) => {
       return res.status(404).json({ success: false, message: 'Appointment not found' });
     }
 
-    if (appointment.userId.toString() !== req.user.id) {
+    const userId = req.targetUserId || req.user.id;
+
+    if (appointment.userId.toString() !== userId.toString()) {
       return res.status(401).json({ success: false, message: 'Not authorized' });
     }
 

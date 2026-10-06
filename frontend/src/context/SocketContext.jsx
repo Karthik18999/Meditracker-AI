@@ -30,6 +30,9 @@ export const SocketProvider = ({ children }) => {
       console.log('Real-time Socket Connected:', socketInstance.id);
       // Join room for this household
       socketInstance.emit('join-household', user.id);
+      if (user.targetUserId && user.targetUserId !== user.id) {
+        socketInstance.emit('join-household', user.targetUserId);
+      }
     });
 
     // Listeners for various events
@@ -51,6 +54,9 @@ export const SocketProvider = ({ children }) => {
 
     return () => {
       socketInstance.emit('leave-household', user.id);
+      if (user.targetUserId && user.targetUserId !== user.id) {
+        socketInstance.emit('leave-household', user.targetUserId);
+      }
       socketInstance.disconnect();
     };
   }, [isAuthenticated, user]);

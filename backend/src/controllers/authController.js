@@ -39,6 +39,8 @@ const registerUser = async (req, res, next) => {
         name: user.name,
         email: user.email,
         role: user.role,
+        familyEmail: user.familyEmail,
+        targetUserId: user._id,
       },
     });
   } catch (error) {
@@ -67,6 +69,12 @@ const loginUser = async (req, res, next) => {
       return res.status(401).json({ success: false, message: 'Invalid email or password' });
     }
 
+    let targetUserId = user._id;
+    if (user.role === 'grandpa' && user.familyEmail) {
+      const familyUser = await User.findOne({ email: user.familyEmail });
+      if (familyUser) targetUserId = familyUser._id;
+    }
+
     res.status(200).json({
       success: true,
       token: signToken(user._id),
@@ -75,6 +83,8 @@ const loginUser = async (req, res, next) => {
         name: user.name,
         email: user.email,
         role: user.role,
+        familyEmail: user.familyEmail,
+        targetUserId,
       },
     });
   } catch (error) {
@@ -89,14 +99,15 @@ const loginUser = async (req, res, next) => {
  */
 const getMe = async (req, res, next) => {
   try {
-    const user = await User.findById(req.user.id);
     res.status(200).json({
       success: true,
       user: {
-        id: user._id,
-        name: user.name,
-        email: user.email,
-        role: user.role,
+        id: req.user._id,
+        name: req.user.name,
+        email: req.user.email,
+        role: req.user.role,
+        familyEmail: req.user.familyEmail,
+        targetUserId: req.targetUserId,
       },
     });
   } catch (error) {
