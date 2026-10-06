@@ -4,33 +4,38 @@ const nodemailer = require('nodemailer');
 let transporter;
 
 const createTransporter = () => {
-  const emailUser = process.env.EMAIL_USER;
-  const emailPass = process.env.EMAIL_PASS;
-  const emailHost = process.env.EMAIL_HOST;
-  const emailPort = process.env.EMAIL_PORT;
+  const brevoUser = process.env.BREVO_USER || process.env.EMAIL_USER;
+  const brevoKey = process.env.BREVO_KEY || process.env.BREVO_API_KEY || process.env.EMAIL_PASS;
+  
+  // Detect if Brevo is configured or requested
+  const isBrevo = process.env.EMAIL_SERVICE === 'brevo' || !!process.env.BREVO_USER || !!process.env.BREVO_KEY || !!process.env.BREVO_API_KEY;
+  const emailHost = process.env.EMAIL_HOST || (isBrevo ? 'smtp-relay.brevo.com' : null);
+  const emailPort = process.env.EMAIL_PORT || 587;
 
-  if (emailHost && emailUser && emailPass) {
-    // Custom SMTP server (SendGrid, Brevo, Mailgun, Amazon SES, Postmark, etc.)
+  if (emailHost && brevoUser && brevoKey && brevoUser !== 'test@example.com') {
+    console.log(`[Notification Service] Initialized Brevo/SMTP Transporter (${emailHost}:${emailPort}) for ${brevoUser}`);
     return nodemailer.createTransport({
       host: emailHost,
-      port: Number(emailPort) || 587,
+      port: Number(emailPort),
       secure: Number(emailPort) === 465,
       auth: {
-        user: emailUser,
-        pass: emailPass,
+        user: brevoUser,
+        pass: brevoKey,
       },
     });
-  } else if (emailUser && emailPass && emailUser !== 'test@example.com') {
-    // Gmail or standard service
+  } else if (process.env.EMAIL_USER && process.env.EMAIL_PASS && process.env.EMAIL_USER !== 'test@example.com') {
+    // Gmail or custom service fallback
+    console.log(`[Notification Service] Initialized Transporter via ${process.env.EMAIL_SERVICE || 'gmail'}`);
     return nodemailer.createTransport({
       service: process.env.EMAIL_SERVICE || 'gmail',
       auth: {
-        user: emailUser,
-        pass: emailPass,
+        user: process.env.EMAIL_USER,
+        pass: process.env.EMAIL_PASS,
       },
     });
   } else {
     // Mock transporter for local development / testing without SMTP configured
+    console.log('[Notification Service] Initialized Mock Transporter (Dev mode active).');
     return {
       sendMail: async (mailOptions) => {
         console.log('\n========================================');
@@ -60,7 +65,7 @@ const sendEmail = async (to, subject, text, html) => {
     if (!transporter) {
       transporter = createTransporter();
     }
-    const fromAddress = process.env.EMAIL_FROM || process.env.EMAIL_USER || 'no-reply@meditracker.ai';
+    const fromAddress = process.env.EMAIL_FROM || process.env.BREVO_USER || process.env.EMAIL_USER || 'no-reply@meditracker.ai';
     const info = await transporter.sendMail({
       from: `"MediTracker AI" <${fromAddress}>`,
       to,
