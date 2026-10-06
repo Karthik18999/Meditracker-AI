@@ -33,7 +33,7 @@ const Footer = ({ variant = 'full', className = '' }) => {
   // Full Rich Health Application Footer (For Application Dashboards: Family, Patient, Doctor)
   return (
     <>
-      <footer className={`bg-slate-900 text-slate-300 border-t border-slate-800/80 pt-10 pb-8 px-6 sm:px-12 mt-12 w-full select-none ${className}`}>
+      <footer className={`bg-transparent text-slate-600 dark:text-slate-400 border-t border-slate-200/80 dark:border-slate-800/80 pt-8 pb-8 px-6 sm:px-12 mt-12 w-full select-none ${className}`}>
         <div className="max-w-7xl mx-auto flex flex-col md:flex-row justify-between items-start md:items-center gap-8">
           
           {/* Left Side: Brand Identity & Mission Tagline */}
@@ -42,12 +42,12 @@ const Footer = ({ variant = 'full', className = '' }) => {
               <div className="p-2 bg-rose-500/10 text-rose-500 rounded-xl">
                 <HeartPulse className="w-6 h-6 animate-pulse" />
               </div>
-              <span className="font-black text-xl text-white tracking-wide">MediTracker AI</span>
-              <span className="bg-emerald-500/20 text-emerald-400 text-xs font-extrabold px-2.5 py-0.5 rounded-full border border-emerald-500/30">
+              <span className="font-black text-xl text-slate-900 dark:text-white tracking-wide">MediTracker AI</span>
+              <span className="bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 text-xs font-extrabold px-2.5 py-0.5 rounded-full border border-emerald-500/20">
                 {version}
               </span>
             </div>
-            <p className="text-xs text-slate-400 leading-relaxed font-medium">
+            <p className="text-xs text-slate-500 dark:text-slate-400 leading-relaxed font-medium">
               © {new Date().getFullYear()} MediTracker AI Inc. All rights reserved.<br />
               Made with purpose for patient care, elder accessibility, and family peace of mind.
             </p>
@@ -59,19 +59,19 @@ const Footer = ({ variant = 'full', className = '' }) => {
             <div className="space-y-2.5">
               <button 
                 onClick={() => setActiveModal('about')} 
-                className="hover:text-emerald-400 text-slate-300 transition-colors block text-left font-semibold cursor-pointer"
+                className="hover:text-emerald-600 dark:hover:text-emerald-400 text-slate-600 dark:text-slate-300 transition-colors block text-left font-semibold cursor-pointer"
               >
                 About Us
               </button>
               <button 
                 onClick={() => setActiveModal('disclaimer')} 
-                className="hover:text-emerald-400 text-slate-300 transition-colors block text-left font-semibold cursor-pointer"
+                className="hover:text-emerald-600 dark:hover:text-emerald-400 text-slate-600 dark:text-slate-300 transition-colors block text-left font-semibold cursor-pointer"
               >
                 Disclaimer
               </button>
               <button 
                 onClick={() => setActiveModal('refills')} 
-                className="hover:text-emerald-400 text-slate-300 transition-colors block text-left font-semibold cursor-pointer"
+                className="hover:text-emerald-600 dark:hover:text-emerald-400 text-slate-600 dark:text-slate-300 transition-colors block text-left font-semibold cursor-pointer"
               >
                 Subscriptions
               </button>
@@ -81,19 +81,19 @@ const Footer = ({ variant = 'full', className = '' }) => {
             <div className="space-y-2.5">
               <button 
                 onClick={() => setActiveModal('contact')} 
-                className="hover:text-emerald-400 text-slate-300 transition-colors block text-left font-semibold cursor-pointer"
+                className="hover:text-emerald-600 dark:hover:text-emerald-400 text-slate-600 dark:text-slate-300 transition-colors block text-left font-semibold cursor-pointer"
               >
                 Contact
               </button>
               <button 
                 onClick={() => setActiveModal('faq')} 
-                className="hover:text-emerald-400 text-slate-300 transition-colors block text-left font-semibold cursor-pointer"
+                className="hover:text-emerald-600 dark:hover:text-emerald-400 text-slate-600 dark:text-slate-300 transition-colors block text-left font-semibold cursor-pointer"
               >
                 FAQ
               </button>
               <button 
                 onClick={() => setActiveModal('sitemap')} 
-                className="hover:text-emerald-400 text-slate-300 transition-colors block text-left font-semibold cursor-pointer"
+                className="hover:text-emerald-600 dark:hover:text-emerald-400 text-slate-600 dark:text-slate-300 transition-colors block text-left font-semibold cursor-pointer"
               >
                 Sitemap
               </button>
@@ -103,13 +103,13 @@ const Footer = ({ variant = 'full', className = '' }) => {
             <div className="space-y-2.5">
               <button 
                 onClick={() => setActiveModal('privacy')} 
-                className="hover:text-emerald-400 text-slate-300 transition-colors block text-left font-semibold cursor-pointer"
+                className="hover:text-emerald-600 dark:hover:text-emerald-400 text-slate-600 dark:text-slate-300 transition-colors block text-left font-semibold cursor-pointer"
               >
                 Privacy Policy
               </button>
               <button 
                 onClick={() => setActiveModal('stories')} 
-                className="hover:text-emerald-400 text-slate-300 transition-colors block text-left font-semibold cursor-pointer"
+                className="hover:text-emerald-600 dark:hover:text-emerald-400 text-slate-600 dark:text-slate-300 transition-colors block text-left font-semibold cursor-pointer"
               >
                 Success Stories
               </button>
@@ -119,13 +119,13 @@ const Footer = ({ variant = 'full', className = '' }) => {
             <div className="space-y-2.5">
               <button 
                 onClick={() => setActiveModal('terms')} 
-                className="hover:text-emerald-400 text-slate-300 transition-colors block text-left font-semibold cursor-pointer"
+                className="hover:text-emerald-600 dark:hover:text-emerald-400 text-slate-600 dark:text-slate-300 transition-colors block text-left font-semibold cursor-pointer"
               >
                 Terms of Service
               </button>
               <button 
                 onClick={() => setActiveModal('community')} 
-                className="hover:text-emerald-400 text-slate-300 transition-colors block text-left font-semibold cursor-pointer"
+                className="hover:text-emerald-600 dark:hover:text-emerald-400 text-slate-600 dark:text-slate-300 transition-colors block text-left font-semibold cursor-pointer"
               >
                 Community
               </button>
