@@ -20,18 +20,27 @@ const protect = async (req, res, next) => {
       req.user = currentUser;
       req.targetUserId = currentUser._id;
 
-      // Transparently route grandpa/doctor requests to the linked family/patient account for data operations
+      // Transparently route grandpa & doctor requests to the linked household/patient targetUserId
       if (currentUser.role === 'grandpa' && currentUser.familyEmail) {
-        const familyUser = await User.findOne({ email: currentUser.familyEmail });
+        const familyUser = await User.findOne({ email: currentUser.familyEmail.toLowerCase().trim() });
         if (familyUser) {
           req.grandpaUser = currentUser;
           req.targetUserId = familyUser._id;
         }
       } else if (currentUser.role === 'doctor' && currentUser.patientEmail) {
-        const patientUser = await User.findOne({ email: currentUser.patientEmail });
+        const patientUser = await User.findOne({ email: currentUser.patientEmail.toLowerCase().trim() });
         if (patientUser) {
           req.doctorUser = currentUser;
-          req.targetUserId = patientUser._id;
+          if (patientUser.role === 'grandpa' && patientUser.familyEmail) {
+            const familyUser = await User.findOne({ email: patientUser.familyEmail.toLowerCase().trim() });
+            if (familyUser) {
+              req.targetUserId = familyUser._id;
+            } else {
+              req.targetUserId = patientUser._id;
+            }
+          } else {
+            req.targetUserId = patientUser._id;
+          }
         }
       }
       next();

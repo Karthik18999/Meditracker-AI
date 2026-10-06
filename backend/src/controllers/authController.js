@@ -129,14 +129,7 @@ const registerUser = async (req, res, next) => {
       isVerified: true,
     });
 
-    let targetUserId = user._id;
-    if (user.role === 'grandpa' && user.familyEmail) {
-      const familyUser = await User.findOne({ email: user.familyEmail });
-      if (familyUser) targetUserId = familyUser._id;
-    } else if (user.role === 'doctor' && user.patientEmail) {
-      const patientUser = await User.findOne({ email: user.patientEmail });
-      if (patientUser) targetUserId = patientUser._id;
-    }
+    const targetUserId = await resolveTargetUserId(user);
 
     res.status(201).json({
       success: true,
@@ -156,6 +149,24 @@ const registerUser = async (req, res, next) => {
   }
 };
 
+const resolveTargetUserId = async (user) => {
+  if (!user) return null;
+  if (user.role === 'grandpa' && user.familyEmail) {
+    const familyUser = await User.findOne({ email: user.familyEmail.toLowerCase().trim() });
+    if (familyUser) return familyUser._id;
+  } else if (user.role === 'doctor' && user.patientEmail) {
+    const patientUser = await User.findOne({ email: user.patientEmail.toLowerCase().trim() });
+    if (patientUser) {
+      if (patientUser.role === 'grandpa' && patientUser.familyEmail) {
+        const familyUser = await User.findOne({ email: patientUser.familyEmail.toLowerCase().trim() });
+        if (familyUser) return familyUser._id;
+      }
+      return patientUser._id;
+    }
+  }
+  return user._id;
+};
+
 /**
  * @desc    Authenticate user & get token
  * @route   POST /api/auth/login
@@ -165,7 +176,7 @@ const loginUser = async (req, res, next) => {
   const { email, password } = req.body;
 
   try {
-    const user = await User.findOne({ email });
+    const user = await User.findOne({ email: email.toLowerCase().trim() });
 
     if (!user) {
       return res.status(401).json({ success: false, message: 'Invalid email or password' });
@@ -177,14 +188,7 @@ const loginUser = async (req, res, next) => {
       return res.status(401).json({ success: false, message: 'Invalid email or password' });
     }
 
-    let targetUserId = user._id;
-    if (user.role === 'grandpa' && user.familyEmail) {
-      const familyUser = await User.findOne({ email: user.familyEmail });
-      if (familyUser) targetUserId = familyUser._id;
-    } else if (user.role === 'doctor' && user.patientEmail) {
-      const patientUser = await User.findOne({ email: user.patientEmail });
-      if (patientUser) targetUserId = patientUser._id;
-    }
+    const targetUserId = await resolveTargetUserId(user);
 
     res.status(200).json({
       success: true,
