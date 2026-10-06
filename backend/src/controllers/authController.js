@@ -57,9 +57,14 @@ const sendOTP = async (req, res, next) => {
       htmlBody
     );
 
+    const isMock = !process.env.EMAIL_USER || process.env.EMAIL_USER === 'test@example.com';
+
     res.status(200).json({
       success: true,
-      message: `Verification code sent to ${cleanEmail}.`,
+      message: isMock
+        ? `[Dev Mode] Verification code generated: ${code}`
+        : `Verification code sent to ${cleanEmail}. Please check your inbox or spam folder.`,
+      code: isMock ? code : undefined
     });
   } catch (error) {
     next(error);
