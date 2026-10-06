@@ -1,6 +1,10 @@
 const express = require('express');
 const cors = require('cors');
 const dotenv = require('dotenv');
+
+// Load environment config first
+dotenv.config();
+
 const errorHandler = require('./middleware/error');
 
 // Import routes
@@ -11,9 +15,6 @@ const appointmentRoutes = require('./routes/appointment');
 const contactRoutes = require('./routes/contact');
 const logRoutes = require('./routes/logs');
 const aiRoutes = require('./routes/ai');
-
-// Load environment config
-dotenv.config();
 
 const app = express();
 
