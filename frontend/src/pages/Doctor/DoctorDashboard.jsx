@@ -89,7 +89,12 @@ const DoctorDashboard = () => {
 
   useEffect(() => {
     fetchDashboardData();
-  }, []);
+
+    // Auto-refresh every 10 seconds for real-time dose confirmation updates
+    const pollInterval = setInterval(fetchDashboardData, 10000);
+
+    return () => clearInterval(pollInterval);
+  }, [socketNotifications]);
 
   // Flash message handler
   const showNotification = (msg) => {
@@ -519,10 +524,42 @@ const DoctorDashboard = () => {
                     <div className="p-3 bg-slate-100 dark:bg-slate-800/60 rounded-xl">
                       <span className="text-xs text-slate-400 block font-semibold uppercase">Doses Taken Today</span>
                       <strong className="text-emerald-600 dark:text-emerald-400">
-                        {schedules.filter(s => s.status === 'taken').length} / {schedules.length}
+                        {schedules.filter(s => s.isCompleted || s.status === 'taken').length} / {schedules.length} Doses
                       </strong>
                     </div>
                   </div>
+
+                  {/* Today's Dose Confirmations Breakdown */}
+                  {schedules.length > 0 && (
+                    <div className="mt-4 pt-3 border-t border-slate-200 dark:border-slate-800">
+                      <span className="text-xs font-bold text-slate-400 uppercase tracking-wider block mb-2">Today's Dose Logs</span>
+                      <div className="space-y-2 max-h-40 overflow-y-auto pr-1">
+                        {schedules.map((s, idx) => {
+                          const medName = s.medicineId?.name || 'Medication';
+                          const taken = s.isCompleted || s.status === 'taken';
+                          return (
+                            <div key={s._id || idx} className="flex items-center justify-between p-2.5 bg-slate-100 dark:bg-slate-800/80 rounded-xl text-xs">
+                              <div>
+                                <strong className="text-slate-800 dark:text-slate-200 block">{medName}</strong>
+                                <span className="text-slate-500 font-medium capitalize">{s.timeLabel || s.timeSlot}</span>
+                              </div>
+                              {taken ? (
+                                <span className="px-2.5 py-1 bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 font-bold rounded-lg flex items-center gap-1">
+                                  <Check className="w-3.5 h-3.5" />
+                                  Taken
+                                </span>
+                              ) : (
+                                <span className="px-2.5 py-1 bg-amber-500/10 text-amber-600 dark:text-amber-400 font-bold rounded-lg flex items-center gap-1">
+                                  <Clock className="w-3.5 h-3.5" />
+                                  Pending
+                                </span>
+                              )}
+                            </div>
+                          );
+                        })}
+                      </div>
+                    </div>
+                  )}
                 </div>
                 <button
                   onClick={() => setActiveTab('medicines')}
