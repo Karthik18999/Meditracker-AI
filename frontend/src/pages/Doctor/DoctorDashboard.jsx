@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import Footer from '../../components/Footer';
 import { useAuth } from '../../context/AuthContext';
 import { useSocket } from '../../context/SocketContext';
 import api from '../../services/api';
@@ -876,6 +877,7 @@ const DoctorDashboard = () => {
           </div>
         )}
 
+        <Footer className="mt-8 border-t border-slate-200/60 dark:border-slate-800/60 max-w-7xl mx-auto" />
       </main>
 
       {/* MEDICATION MODAL */}

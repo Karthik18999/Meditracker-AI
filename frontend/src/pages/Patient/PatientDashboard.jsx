@@ -1,4 +1,5 @@
 import React, { useEffect, useState, useRef } from 'react';
+import Footer from '../../components/Footer';
 import { useAuth } from '../../context/AuthContext';
 import { useSocket } from '../../context/SocketContext';
 import api from '../../services/api';
@@ -338,6 +339,9 @@ const PatientDashboard = () => {
           </button>
         </div>
       </footer>
+
+      {/* Persistent Version & About Us Footer */}
+      <Footer className="mt-4 border-slate-800 text-slate-400" />
 
       {/* Fullscreen Alarm Overdue Screen Overlay */}
       <AnimatePresence>

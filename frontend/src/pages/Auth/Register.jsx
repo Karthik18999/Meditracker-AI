@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import Footer from '../../components/Footer';
 import { useNavigate, Link } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
 import { motion } from 'framer-motion';
@@ -278,6 +279,8 @@ const Register = () => {
             </p>
           </div>
         </div>
+
+        <Footer className="mt-6 border-t-0" />
       </motion.div>
     </div>
   );
