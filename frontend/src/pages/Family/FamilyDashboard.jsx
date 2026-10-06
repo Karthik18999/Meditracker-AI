@@ -1066,21 +1066,21 @@ const FamilyDashboard = () => {
       {/* Add/Edit Medication Modal */}
       <AnimatePresence>
         {isMedModalOpen && (
-          <div className="fixed inset-0 bg-slate-950/60 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+          <div className="fixed inset-0 bg-slate-950/60 backdrop-blur-sm z-50 flex items-end sm:items-center justify-center p-0 sm:p-4">
             <motion.div 
-              initial={{ scale: 0.95, opacity: 0 }}
-              animate={{ scale: 1, opacity: 1 }}
-              exit={{ scale: 0.95, opacity: 0 }}
-              className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-3xl p-6 w-full max-w-2xl max-h-[90vh] overflow-y-auto shadow-2xl"
+              initial={{ y: 50, opacity: 0 }}
+              animate={{ y: 0, opacity: 1 }}
+              exit={{ y: 50, opacity: 0 }}
+              className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-t-3xl sm:rounded-3xl p-5 sm:p-6 w-full max-w-2xl max-h-[90vh] overflow-y-auto shadow-2xl"
             >
-              <h3 className="text-2xl font-extrabold mb-6">
+              <h3 className="text-xl sm:text-2xl font-extrabold mb-4 sm:mb-6">
                 {editingMed ? 'Edit Medication Settings' : 'Add Medication Setup'}
               </h3>
 
-              <form onSubmit={handleMedSubmit} className="space-y-4 text-sm">
-                <div className="grid grid-cols-2 gap-4">
+              <form onSubmit={handleMedSubmit} className="space-y-4 text-xs sm:text-sm">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
                   <div>
-                    <label className="block font-bold mb-1.5 text-slate-500">Medicine Name</label>
+                    <label className="block font-bold mb-1 sm:mb-1.5 text-slate-500">Medicine Name</label>
                     <input
                       type="text"
                       name="name"
@@ -1092,7 +1092,7 @@ const FamilyDashboard = () => {
                     />
                   </div>
                   <div>
-                    <label className="block font-bold mb-1.5 text-slate-500">Dose Quantity</label>
+                    <label className="block font-bold mb-1 sm:mb-1.5 text-slate-500">Dose Quantity</label>
                     <input
                       type="text"
                       name="dosage"
@@ -1105,9 +1105,9 @@ const FamilyDashboard = () => {
                   </div>
                 </div>
 
-                <div className="grid grid-cols-3 gap-4">
+                <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 sm:gap-4">
                   <div>
-                    <label className="block font-bold mb-1.5 text-slate-500">Medicine Type</label>
+                    <label className="block font-bold mb-1 sm:mb-1.5 text-slate-500">Medicine Type</label>
                     <select
                       name="type"
                       value={medForm.type}
@@ -1121,7 +1121,7 @@ const FamilyDashboard = () => {
                     </select>
                   </div>
                   <div>
-                    <label className="block font-bold mb-1.5 text-slate-500">Food Constraint</label>
+                    <label className="block font-bold mb-1 sm:mb-1.5 text-slate-500">Food Constraint</label>
                     <select
                       name="foodRelation"
                       value={medForm.foodRelation}
@@ -1134,7 +1134,7 @@ const FamilyDashboard = () => {
                     </select>
                   </div>
                   <div>
-                    <label className="block font-bold mb-1.5 text-slate-500">Visual Theme Color</label>
+                    <label className="block font-bold mb-1 sm:mb-1.5 text-slate-500">Visual Theme Color</label>
                     <input
                       type="color"
                       name="color"
@@ -1145,9 +1145,9 @@ const FamilyDashboard = () => {
                   </div>
                 </div>
 
-                <div className="border-t border-slate-200 dark:border-slate-800 pt-4">
+                <div className="border-t border-slate-200 dark:border-slate-800 pt-3 sm:pt-4">
                   <h4 className="font-extrabold text-slate-500 mb-2">Medication Schedule Times</h4>
-                  <div className="flex flex-wrap gap-4 items-center mb-3">
+                  <div className="flex flex-wrap gap-3 sm:gap-4 items-center mb-3">
                     <label className="flex items-center gap-2 font-bold cursor-pointer">
                       <input
                         type="checkbox"
@@ -1192,9 +1192,9 @@ const FamilyDashboard = () => {
                   </div>
                 </div>
 
-                <div className="border-t border-slate-200 dark:border-slate-800 pt-4">
-                  <h4 className="font-extrabold text-slate-500 mb-2.5">Inventory & Supplier</h4>
-                  <div className="grid grid-cols-2 gap-4">
+                <div className="border-t border-slate-200 dark:border-slate-800 pt-3 sm:pt-4">
+                  <h4 className="font-extrabold text-slate-500 mb-2">Inventory & Supplier</h4>
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
                     <div>
                       <label className="block font-bold mb-1 text-slate-500">Current Stock Count</label>
                       <input
@@ -1221,7 +1221,7 @@ const FamilyDashboard = () => {
                 </div>
 
                 <div>
-                  <label className="block font-bold mb-1.5 text-slate-500">Doctor Notes & Instructions</label>
+                  <label className="block font-bold mb-1 text-slate-500">Doctor Notes & Instructions</label>
                   <textarea
                     name="doctorNotes"
                     value={medForm.doctorNotes}
@@ -1241,7 +1241,7 @@ const FamilyDashboard = () => {
                   </button>
                   <button
                     type="submit"
-                    className="px-4 py-2.5 bg-emerald-500 hover:bg-emerald-600 text-white font-bold rounded-xl"
+                    className="px-4 py-2.5 bg-emerald-500 hover:bg-emerald-600 text-white font-bold rounded-xl shadow-lg shadow-emerald-500/10"
                   >
                     Save Changes
                   </button>
@@ -1255,15 +1255,15 @@ const FamilyDashboard = () => {
       {/* Add Appointment Modal */}
       <AnimatePresence>
         {isAppointmentModalOpen && (
-          <div className="fixed inset-0 bg-slate-950/60 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+          <div className="fixed inset-0 bg-slate-950/60 backdrop-blur-sm z-50 flex items-end sm:items-center justify-center p-0 sm:p-4">
             <motion.div
-              initial={{ scale: 0.95, opacity: 0 }}
-              animate={{ scale: 1, opacity: 1 }}
-              exit={{ scale: 0.95, opacity: 0 }}
-              className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-3xl p-6 w-full max-w-md shadow-2xl"
+              initial={{ y: 50, opacity: 0 }}
+              animate={{ y: 0, opacity: 1 }}
+              exit={{ y: 50, opacity: 0 }}
+              className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-t-3xl sm:rounded-3xl p-5 sm:p-6 w-full max-w-md max-h-[90vh] overflow-y-auto shadow-2xl"
             >
-              <h3 className="text-xl font-extrabold mb-4">Register Doctor Visit</h3>
-              <form onSubmit={handleAppointmentSubmit} className="space-y-4 text-xs">
+              <h3 className="text-lg sm:text-xl font-extrabold mb-4">Register Doctor Visit</h3>
+              <form onSubmit={handleAppointmentSubmit} className="space-y-3.5 text-xs sm:text-sm">
                 <div>
                   <label className="block font-bold mb-1 text-slate-500">Doctor Name</label>
                   <input
@@ -1323,7 +1323,7 @@ const FamilyDashboard = () => {
                   </button>
                   <button
                     type="submit"
-                    className="px-4 py-2 bg-emerald-500 hover:bg-emerald-600 text-white font-bold rounded-xl"
+                    className="px-4 py-2 bg-emerald-500 hover:bg-emerald-600 text-white font-bold rounded-xl shadow-lg shadow-emerald-500/10"
                   >
                     Save Visit
                   </button>
@@ -1337,15 +1337,15 @@ const FamilyDashboard = () => {
       {/* Add Emergency Contact Modal */}
       <AnimatePresence>
         {isContactModalOpen && (
-          <div className="fixed inset-0 bg-slate-950/60 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+          <div className="fixed inset-0 bg-slate-950/60 backdrop-blur-sm z-50 flex items-end sm:items-center justify-center p-0 sm:p-4">
             <motion.div
-              initial={{ scale: 0.95, opacity: 0 }}
-              animate={{ scale: 1, opacity: 1 }}
-              exit={{ scale: 0.95, opacity: 0 }}
-              className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-3xl p-6 w-full max-w-md shadow-2xl"
+              initial={{ y: 50, opacity: 0 }}
+              animate={{ y: 0, opacity: 1 }}
+              exit={{ y: 50, opacity: 0 }}
+              className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-t-3xl sm:rounded-3xl p-5 sm:p-6 w-full max-w-md max-h-[90vh] overflow-y-auto shadow-2xl"
             >
-              <h3 className="text-xl font-extrabold mb-4">Add Caregiver Contact</h3>
-              <form onSubmit={handleContactSubmit} className="space-y-4 text-xs">
+              <h3 className="text-lg sm:text-xl font-extrabold mb-4">Add Caregiver Contact</h3>
+              <form onSubmit={handleContactSubmit} className="space-y-3.5 text-xs sm:text-sm">
                 <div>
                   <label className="block font-bold mb-1 text-slate-500">Contact Name</label>
                   <input
@@ -1408,7 +1408,7 @@ const FamilyDashboard = () => {
                   </button>
                   <button
                     type="submit"
-                    className="px-4 py-2 bg-emerald-500 hover:bg-emerald-600 text-white font-bold rounded-xl"
+                    className="px-4 py-2 bg-emerald-500 hover:bg-emerald-600 text-white font-bold rounded-xl shadow-lg shadow-emerald-500/10"
                   >
                     Save Contact
                   </button>
