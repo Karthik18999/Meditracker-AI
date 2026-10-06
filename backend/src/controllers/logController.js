@@ -145,7 +145,7 @@ const takeMedicine = async (req, res, next) => {
       hour: '2-digit',
       minute: '2-digit',
     });
-    const completionMsg = `Grandpa completed his ${schedule.timeSlot} dose of ${medicine.name} at ${formattedTime}.`;
+    const completionMsg = `Patient completed ${schedule.timeSlot} dose of ${medicine.name} at ${formattedTime}.`;
     
     const notif = await Notification.create({
       userId,
@@ -155,13 +155,15 @@ const takeMedicine = async (req, res, next) => {
     });
 
     // Real-time socket broadcast
-    emitToHousehold(userId.toString(), 'grandpa-completed', {
+    const completionPayload = {
       scheduleId: schedule._id,
       medicineName: medicine.name,
       timeSlot: schedule.timeSlot,
       completedAt: schedule.completedAt,
       currentStock: currentStockValue,
-    });
+    };
+    emitToHousehold(userId.toString(), 'patient-completed', completionPayload);
+    emitToHousehold(userId.toString(), 'grandpa-completed', completionPayload);
     emitToHousehold(userId.toString(), 'new-notification', notif);
 
     // Email alert
@@ -181,7 +183,7 @@ const takeMedicine = async (req, res, next) => {
 };
 
 /**
- * @desc    Grandpa triggers emergency alert
+ * @desc    Patient triggers emergency alert
  * @route   POST /api/logs/emergency
  * @access  Private
  */
@@ -196,7 +198,7 @@ const triggerEmergency = async (req, res, next) => {
       ? `Live Location: https://maps.google.com/?q=${latitude},${longitude}` 
       : 'Location details unavailable';
       
-    const emergencyMsg = `CRITICAL: Grandpa triggered the Emergency Help Button! ${locationString}`;
+    const emergencyMsg = `CRITICAL: Patient triggered the Emergency Help Button! ${locationString}`;
 
     const notif = await Notification.create({
       userId,
@@ -228,7 +230,7 @@ const triggerEmergency = async (req, res, next) => {
         await sendEmail(contact.email, '🚨 EMERGENCY ALERT - MediTracker AI', emergencyMsg);
       }
       if (contact.phone) {
-        await sendSMS(contact.phone, `EMERGENCY ALERT: Grandpa needs assistance. ${locationString}`);
+        await sendSMS(contact.phone, `EMERGENCY ALERT: Patient needs assistance. ${locationString}`);
       }
     }
 

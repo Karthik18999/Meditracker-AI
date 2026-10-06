@@ -25,13 +25,13 @@ const Register = () => {
       return;
     }
 
-    if (role === 'grandpa' && !familyEmail) {
-      setError("Please link Grandpa to a Family Monitor's email address.");
+    if ((role === 'patient' || role === 'grandpa') && !familyEmail) {
+      setError("Please link Patient to a Family Monitor's email address.");
       return;
     }
 
     if (role === 'doctor' && !familyEmail && !patientEmail) {
-      setError("Please link Doctor account to Grandpa or Family Monitor's email address.");
+      setError("Please link Doctor account to Patient or Family Monitor's email address.");
       return;
     }
 
@@ -41,8 +41,8 @@ const Register = () => {
     try {
       await register(name, email, password, role, familyEmail, patientEmail);
 
-      if (role === 'grandpa') {
-        navigate('/grandpa');
+      if (role === 'patient' || role === 'grandpa') {
+        navigate('/patient');
       } else if (role === 'doctor') {
         navigate('/doctor');
       } else {
@@ -167,14 +167,14 @@ const Register = () => {
                 </button>
                 <button
                   type="button"
-                  onClick={() => setRole('grandpa')}
+                  onClick={() => setRole('patient')}
                   className={`py-2 rounded-xl border text-xs sm:text-sm font-bold transition-all ${
-                    role === 'grandpa'
+                    role === 'patient' || role === 'grandpa'
                       ? 'border-emerald-500 bg-emerald-500/10 text-emerald-600 dark:text-emerald-400'
                       : 'border-slate-200 dark:border-slate-800 text-slate-500 hover:bg-slate-100 dark:hover:bg-slate-900'
                   }`}
                 >
-                  Grandpa
+                  Patient
                 </button>
                 <button
                   type="button"
@@ -190,7 +190,7 @@ const Register = () => {
               </div>
             </div>
 
-            {role === 'grandpa' && (
+            {(role === 'patient' || role === 'grandpa') && (
               <motion.div
                 initial={{ opacity: 0, height: 0 }}
                 animate={{ opacity: 1, height: 'auto' }}
@@ -209,7 +209,7 @@ const Register = () => {
                     onChange={(e) => setFamilyEmail(e.target.value)}
                     placeholder="family@example.com"
                     className="w-full pl-11 pr-4 py-2.5 bg-white/50 dark:bg-slate-900/50 border border-slate-200 dark:border-slate-800 rounded-xl focus:outline-none focus:ring-2 focus:ring-emerald-500 text-slate-800 dark:text-white transition-all text-sm"
-                    required={role === 'grandpa'}
+                    required={role === 'patient' || role === 'grandpa'}
                   />
                 </div>
               </motion.div>
@@ -241,7 +241,7 @@ const Register = () => {
 
                 <div>
                   <label className="block text-sm font-semibold text-slate-600 dark:text-slate-300 mb-1">
-                    Grandpa / Patient's Email
+                    Patient's Email
                   </label>
                   <div className="relative">
                     <span className="absolute inset-y-0 left-0 pl-3.5 flex items-center text-slate-400">
@@ -251,7 +251,7 @@ const Register = () => {
                       type="email"
                       value={patientEmail}
                       onChange={(e) => setPatientEmail(e.target.value)}
-                      placeholder="grandpa@example.com"
+                      placeholder="patient@example.com"
                       className="w-full pl-11 pr-4 py-2.5 bg-white/50 dark:bg-slate-900/50 border border-slate-200 dark:border-slate-800 rounded-xl focus:outline-none focus:ring-2 focus:ring-emerald-500 text-slate-800 dark:text-white transition-all text-sm"
                     />
                   </div>

@@ -24,8 +24,8 @@ const Login = () => {
     setSubmitting(true);
     try {
       const user = await login(email, password);
-      if (user.role === 'grandpa') {
-        navigate('/grandpa');
+      if (user.role === 'patient' || user.role === 'grandpa') {
+        navigate('/patient');
       } else if (user.role === 'doctor') {
         navigate('/doctor');
       } else {

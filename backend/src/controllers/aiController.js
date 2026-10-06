@@ -70,18 +70,18 @@ const getAIInsights = async (req, res, next) => {
     // AI summary card creation
     let summaryText = total === 0 
       ? 'No medicine schedules recorded yet. Adherence compliance will calculate as daily doses are completed.' 
-      : 'Grandpa is tracking well overall! ';
+      : 'Patient is tracking well overall! ';
     let riskAlerts = [];
 
     if (total > 0 && rate < 70) {
       summaryText = 'Adherence is lower than recommended. Attention needed.';
       riskAlerts.push('Adherence rate has dropped below safety levels (70%). Consider reviewing dosage schedules.');
     } else if (total > 0 && rate >= 90) {
-      summaryText = 'Outstanding compliance! Grandpa is taking his medicines exactly as scheduled.';
+      summaryText = 'Outstanding compliance! Patient is taking medicines exactly as scheduled.';
     }
 
     if (frequentlyMissed.length > 0) {
-      riskAlerts.push(`Grandpa frequently misses: ${frequentlyMissed[0].name}. Try setting an alarm helper.`);
+      riskAlerts.push(`Patient frequently misses: ${frequentlyMissed[0].name}. Try setting an alarm helper.`);
     }
 
     if (criticalStocks.length > 0) {
@@ -127,20 +127,20 @@ const handleChatQuery = async (req, res, next) => {
 
     let reply = "";
 
-    // 1. "Did Grandpa take today's medicines?"
+    // 1. "Did Patient take today's medicines?"
     if (query.includes('today') && (query.includes('take') || query.includes('completed') || query.includes('status'))) {
       const today = new Date().toISOString().split('T')[0];
       const todayScheds = schedules.filter(s => s.dateString === today);
 
       if (todayScheds.length === 0) {
-        reply = "There are no medicines scheduled for Grandpa today.";
+        reply = "There are no medicines scheduled for Patient today.";
       } else {
         const taken = todayScheds.filter(s => s.isCompleted);
         const pending = todayScheds.filter(s => !s.isCompleted && !s.isSkipped && !s.isMissed);
         const takenNames = taken.map(t => `${t.medicineId.name} (${t.timeSlot})`).join(', ');
         const pendingNames = pending.map(p => `${p.medicineId.name} (${p.timeSlot})`).join(', ');
 
-        reply = `Today, Grandpa has completed ${taken.length} of ${todayScheds.length} doses.`;
+        reply = `Today, Patient has completed ${taken.length} of ${todayScheds.length} doses.`;
         if (taken.length > 0) {
           reply += `\n\nCompleted: ${takenNames}.`;
         }
@@ -174,7 +174,7 @@ const handleChatQuery = async (req, res, next) => {
       const items = Object.keys(missedCount).map(name => `${name} (forgotten ${missedCount[name]} times)`);
       
       if (items.length === 0) {
-        reply = "Excellent news! Grandpa hasn't missed any scheduled medicines in recent logs.";
+        reply = "Excellent news! Patient hasn't missed any scheduled medicines in recent logs.";
       } else {
         reply = "Based on logs, these medicines are missed most frequently:\n\n" + items.join('\n');
       }
@@ -196,7 +196,7 @@ const handleChatQuery = async (req, res, next) => {
       const total = schedules.length;
       const rate = total > 0 ? Math.round((completed / total) * 100) : 0;
 
-      reply = `Grandpa's average medicine adherence rate sits at **${rate}%** across all registered historical doses.`;
+      reply = `Patient's average medicine adherence rate sits at **${rate}%** across all registered historical doses.`;
       if (rate >= 90) {
         reply += " This is in the optimal therapeutic window. Keep up the great support!";
       } else if (rate < 70) {
@@ -205,8 +205,8 @@ const handleChatQuery = async (req, res, next) => {
     }
     // 6. Generic greeting/fallback
     else {
-      reply = "Hello! I am your MediTracker AI assistant. I analyze Grandpa's adherence data, logs, and stock in real-time. You can ask me:\n" +
-              "- Did Grandpa take today's medicines?\n" +
+      reply = "Hello! I am your MediTracker AI assistant. I analyze Patient's adherence data, logs, and stock in real-time. You can ask me:\n" +
+              "- Did Patient take today's medicines?\n" +
               "- How many tablets are remaining?\n" +
               "- Which medicines are frequently missed?\n" +
               "- When should I buy medicines?\n" +

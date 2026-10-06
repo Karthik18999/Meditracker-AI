@@ -8,7 +8,7 @@ import ProtectedRoute from './components/ProtectedRoute';
 // Pages
 import Login from './pages/Auth/Login';
 import Register from './pages/Auth/Register';
-import GrandpaDashboard from './pages/Grandpa/GrandpaDashboard';
+import PatientDashboard from './pages/Patient/PatientDashboard';
 import FamilyDashboard from './pages/Family/FamilyDashboard';
 import DoctorDashboard from './pages/Doctor/DoctorDashboard';
 
@@ -32,15 +32,16 @@ function App() {
               <Route path="/login" element={<Login />} />
               <Route path="/register" element={<Register />} />
 
-              {/* Protected Grandpa Mode */}
+              {/* Protected Patient Mode */}
               <Route 
-                path="/grandpa" 
+                path="/patient" 
                 element={
-                  <ProtectedRoute allowedRoles={['grandpa']}>
-                    <GrandpaDashboard />
+                  <ProtectedRoute allowedRoles={['patient', 'grandpa']}>
+                    <PatientDashboard />
                   </ProtectedRoute>
                 } 
               />
+              <Route path="/grandpa" element={<Navigate to="/patient" replace />} />
 
               {/* Protected Family Dashboard */}
               <Route 

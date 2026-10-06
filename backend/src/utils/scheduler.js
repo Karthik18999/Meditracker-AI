@@ -104,10 +104,10 @@ const runMissedMedicineCheck = async () => {
           const contacts = await Contact.find({ userId: schedule.userId });
           for (const contact of contacts) {
             if (contact.email) {
-              await sendEmail(contact.email, '🚨 URGENT: Grandpa Missed Medicine', message);
+              await sendEmail(contact.email, '🚨 URGENT: Patient Missed Medicine', message);
             }
             if (contact.phone) {
-              await sendSMS(contact.phone, `URGENT ALERT: Grandpa has missed taking ${medicine.name} by ${level} minutes!`);
+              await sendSMS(contact.phone, `URGENT ALERT: Patient has missed taking ${medicine.name} by ${level} minutes!`);
             }
           }
         }
@@ -126,13 +126,13 @@ const runMissedMedicineCheck = async () => {
 
       // Check thresholds
       if (diffMins >= 60) {
-        await notifyAdherenceIssue(60, `CRITICAL: Grandpa has missed his ${schedule.timeLabel} dose of ${medicine.name} by over 1 hour!`, true);
+        await notifyAdherenceIssue(60, `CRITICAL: Patient has missed ${schedule.timeLabel} dose of ${medicine.name} by over 1 hour!`, true);
       } else if (diffMins >= 45) {
-        await notifyAdherenceIssue(45, `URGENT: Grandpa has missed his ${schedule.timeLabel} dose of ${medicine.name} by 45 minutes. Emergency contacts have been informed.`, true);
+        await notifyAdherenceIssue(45, `URGENT: Patient has missed ${schedule.timeLabel} dose of ${medicine.name} by 45 minutes. Emergency contacts have been informed.`, true);
       } else if (diffMins >= 30) {
-        await notifyAdherenceIssue(30, `Reminder: Grandpa's ${schedule.timeLabel} dose of ${medicine.name} was scheduled 30 minutes ago. Please remind him.`);
+        await notifyAdherenceIssue(30, `Reminder: Patient's ${schedule.timeLabel} dose of ${medicine.name} was scheduled 30 minutes ago. Please remind them.`);
       } else if (diffMins >= 15) {
-        await notifyAdherenceIssue(15, `Alert: Grandpa's ${schedule.timeLabel} dose of ${medicine.name} is 15 minutes overdue.`);
+        await notifyAdherenceIssue(15, `Alert: Patient's ${schedule.timeLabel} dose of ${medicine.name} is 15 minutes overdue.`);
       }
     }
   } catch (error) {

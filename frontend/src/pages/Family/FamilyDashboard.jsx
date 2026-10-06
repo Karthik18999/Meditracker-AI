@@ -34,7 +34,7 @@ const FamilyDashboard = () => {
   const [reportGraph, setReportGraph] = useState([]);
   const [aiInsights, setAiInsights] = useState(null);
   const [chatHistory, setChatHistory] = useState([
-    { role: 'assistant', text: 'Hello! I am your MediTracker AI assistant. You can ask me questions about Grandpa\'s compliance, stocks, or refill predictions.' }
+    { role: 'assistant', text: 'Hello! I am your MediTracker AI assistant. You can ask me questions about Patient\'s compliance, stocks, or refill predictions.' }
   ]);
   const [chatInput, setChatInput] = useState('');
   const [chatLoading, setChatLoading] = useState(false);
@@ -418,10 +418,10 @@ const FamilyDashboard = () => {
               </div>
               <div>
                 <h3 className="text-base sm:text-lg font-black tracking-wide uppercase text-yellow-300 animate-pulse">
-                  🚨 CRITICAL ALERT: GRANDPA IS IN SERIOUS CONDITION / EMERGENCY MODE!
+                  🚨 CRITICAL ALERT: PATIENT IS IN SERIOUS CONDITION / EMERGENCY MODE!
                 </h3>
                 <p className="text-xs sm:text-sm font-medium text-red-100">
-                  {activeEmergency.message || 'Help button activated on Grandpa Mode. Urgent attention required.'}
+                  {activeEmergency.message || 'Help button activated on Patient Mode. Urgent attention required.'}
                 </p>
               </div>
             </div>
@@ -1090,7 +1090,7 @@ const FamilyDashboard = () => {
                     <Bot className="w-8 h-8 text-emerald-500" />
                     AI Health Assistant Chatbot
                   </h2>
-                  <p className="text-slate-500 mt-1">Ask context-aware questions about Grandpa's medicine logs and stock levels</p>
+                  <p className="text-slate-500 mt-1">Ask context-aware questions about Patient's medicine logs and stock levels</p>
                 </div>
 
                 <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl p-6 flex flex-col h-[550px] shadow-sm">
@@ -1128,7 +1128,7 @@ const FamilyDashboard = () => {
                       type="text"
                       value={chatInput}
                       onChange={(e) => setChatInput(e.target.value)}
-                      placeholder="e.g. Did Grandpa take today's medicines?"
+                      placeholder="e.g. Did Patient take today's medicines?"
                       className="flex-1 px-4 py-3 bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500"
                     />
                     <button

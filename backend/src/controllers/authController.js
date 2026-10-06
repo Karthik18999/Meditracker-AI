@@ -124,7 +124,7 @@ const registerUser = async (req, res, next) => {
       email: cleanEmail,
       password,
       role: role || 'family',
-      familyEmail: role === 'grandpa' ? familyEmail : undefined,
+      familyEmail: (role === 'patient' || role === 'grandpa') ? familyEmail : undefined,
       patientEmail: role === 'doctor' ? patientEmail : undefined,
       isVerified: true,
     });
@@ -151,7 +151,7 @@ const registerUser = async (req, res, next) => {
 
 const resolveTargetUserId = async (user) => {
   if (!user) return null;
-  if (user.role === 'grandpa' && user.familyEmail) {
+  if ((user.role === 'patient' || user.role === 'grandpa') && user.familyEmail) {
     const familyUser = await User.findOne({ email: user.familyEmail.toLowerCase().trim() });
     if (familyUser) return familyUser._id;
   } else if (user.role === 'doctor') {
@@ -163,7 +163,7 @@ const resolveTargetUserId = async (user) => {
       targetUser = await User.findOne({ email: user.familyEmail.toLowerCase().trim() });
     }
     if (targetUser) {
-      if (targetUser.role === 'grandpa' && targetUser.familyEmail) {
+      if ((targetUser.role === 'patient' || targetUser.role === 'grandpa') && targetUser.familyEmail) {
         const familyUser = await User.findOne({ email: targetUser.familyEmail.toLowerCase().trim() });
         if (familyUser) return familyUser._id;
       }
