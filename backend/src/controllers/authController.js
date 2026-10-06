@@ -109,45 +109,25 @@ const verifyOTP = async (req, res, next) => {
  * @access  Public
  */
 const registerUser = async (req, res, next) => {
-  const { name, email, password, role, familyEmail, patientEmail, verificationCode } = req.body;
+  const { name, email, password, role, familyEmail, patientEmail } = req.body;
 
   try {
     const cleanEmail = email.toLowerCase().trim();
     const userExists = await User.findOne({ email: cleanEmail });
 
-    if (userExists && userExists.isVerified) {
+    if (userExists) {
       return res.status(400).json({ success: false, message: 'An account with this email address already exists. Please log in.' });
     }
 
-    // Check verification code
-    const record = pendingVerifications.get(cleanEmail);
-    if (!record || record.code !== verificationCode?.toString()?.trim()) {
-      return res.status(400).json({ success: false, message: 'Invalid or expired email verification code. Please check your code and try again.' });
-    }
-
-    let user;
-    if (userExists) {
-      userExists.name = name;
-      userExists.password = password;
-      userExists.role = role || 'family';
-      userExists.familyEmail = role === 'grandpa' ? familyEmail : undefined;
-      userExists.patientEmail = role === 'doctor' ? patientEmail : undefined;
-      userExists.isVerified = true;
-      user = await userExists.save();
-    } else {
-      user = await User.create({
-        name,
-        email: cleanEmail,
-        password,
-        role: role || 'family',
-        familyEmail: role === 'grandpa' ? familyEmail : undefined,
-        patientEmail: role === 'doctor' ? patientEmail : undefined,
-        isVerified: true,
-      });
-    }
-
-    // Clear verification cache
-    pendingVerifications.delete(cleanEmail);
+    const user = await User.create({
+      name,
+      email: cleanEmail,
+      password,
+      role: role || 'family',
+      familyEmail: role === 'grandpa' ? familyEmail : undefined,
+      patientEmail: role === 'doctor' ? patientEmail : undefined,
+      isVerified: true,
+    });
 
     let targetUserId = user._id;
     if (user.role === 'grandpa' && user.familyEmail) {

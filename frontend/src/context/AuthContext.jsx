@@ -52,10 +52,10 @@ export const AuthProvider = ({ children }) => {
     return await api.post('/auth/verify-otp', { email, code });
   };
 
-  const register = async (name, email, password, role, familyEmail, patientEmail, verificationCode) => {
+  const register = async (name, email, password, role, familyEmail, patientEmail) => {
     setLoading(true);
     try {
-      const res = await api.post('/auth/register', { name, email, password, role, familyEmail, patientEmail, verificationCode });
+      const res = await api.post('/auth/register', { name, email, password, role, familyEmail, patientEmail });
       localStorage.setItem('token', res.token);
       setUser(res.user);
       return res.user;
