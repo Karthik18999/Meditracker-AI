@@ -46,9 +46,6 @@ const Register = () => {
     try {
       const res = await sendOTP(email);
       setSuccessMsg(res.message || `Verification code sent to ${email}`);
-      if (res?.code) {
-        setVerificationCode(res.code);
-      }
       setStep(2);
     } catch (err) {
       setError(err.message || 'Failed to send verification code. Please try again.');
@@ -372,9 +369,6 @@ const Register = () => {
                       try {
                         const res = await sendOTP(email);
                         setSuccessMsg(res.message || 'New verification code sent!');
-                        if (res?.code) {
-                          setVerificationCode(res.code);
-                        }
                       } catch (err) {
                         setError(err.message);
                       }
