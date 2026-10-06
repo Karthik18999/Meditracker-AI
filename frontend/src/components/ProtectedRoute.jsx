@@ -26,6 +26,10 @@ const ProtectedRoute = ({ children, allowedRoles }) => {
     if (role === 'grandpa') {
       return <Navigate to="/grandpa" replace />;
     }
+    // If user has doctor role, send them to doctor dashboard
+    if (role === 'doctor') {
+      return <Navigate to="/doctor" replace />;
+    }
     return <Navigate to="/login" replace />;
   }
 

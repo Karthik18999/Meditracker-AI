@@ -20,10 +20,15 @@ const UserSchema = new mongoose.Schema({
   },
   role: {
     type: String,
-    enum: ['family', 'grandpa'],
+    enum: ['family', 'grandpa', 'doctor'],
     default: 'family',
   },
   familyEmail: {
+    type: String,
+    trim: true,
+    lowercase: true,
+  },
+  patientEmail: {
     type: String,
     trim: true,
     lowercase: true,

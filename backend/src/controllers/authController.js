@@ -108,7 +108,7 @@ const verifyOTP = async (req, res, next) => {
  * @access  Public
  */
 const registerUser = async (req, res, next) => {
-  const { name, email, password, role, familyEmail, verificationCode } = req.body;
+  const { name, email, password, role, familyEmail, patientEmail, verificationCode } = req.body;
 
   try {
     const cleanEmail = email.toLowerCase().trim();
@@ -130,6 +130,7 @@ const registerUser = async (req, res, next) => {
       userExists.password = password;
       userExists.role = role || 'family';
       userExists.familyEmail = role === 'grandpa' ? familyEmail : undefined;
+      userExists.patientEmail = role === 'doctor' ? patientEmail : undefined;
       userExists.isVerified = true;
       user = await userExists.save();
     } else {
@@ -139,12 +140,22 @@ const registerUser = async (req, res, next) => {
         password,
         role: role || 'family',
         familyEmail: role === 'grandpa' ? familyEmail : undefined,
+        patientEmail: role === 'doctor' ? patientEmail : undefined,
         isVerified: true,
       });
     }
 
     // Clear verification cache
     pendingVerifications.delete(cleanEmail);
+
+    let targetUserId = user._id;
+    if (user.role === 'grandpa' && user.familyEmail) {
+      const familyUser = await User.findOne({ email: user.familyEmail });
+      if (familyUser) targetUserId = familyUser._id;
+    } else if (user.role === 'doctor' && user.patientEmail) {
+      const patientUser = await User.findOne({ email: user.patientEmail });
+      if (patientUser) targetUserId = patientUser._id;
+    }
 
     res.status(201).json({
       success: true,
@@ -155,7 +166,8 @@ const registerUser = async (req, res, next) => {
         email: user.email,
         role: user.role,
         familyEmail: user.familyEmail,
-        targetUserId: user._id,
+        patientEmail: user.patientEmail,
+        targetUserId,
       },
     });
   } catch (error) {
@@ -188,6 +200,9 @@ const loginUser = async (req, res, next) => {
     if (user.role === 'grandpa' && user.familyEmail) {
       const familyUser = await User.findOne({ email: user.familyEmail });
       if (familyUser) targetUserId = familyUser._id;
+    } else if (user.role === 'doctor' && user.patientEmail) {
+      const patientUser = await User.findOne({ email: user.patientEmail });
+      if (patientUser) targetUserId = patientUser._id;
     }
 
     res.status(200).json({
@@ -199,6 +214,7 @@ const loginUser = async (req, res, next) => {
         email: user.email,
         role: user.role,
         familyEmail: user.familyEmail,
+        patientEmail: user.patientEmail,
         targetUserId,
       },
     });
@@ -222,6 +238,7 @@ const getMe = async (req, res, next) => {
         email: req.user.email,
         role: req.user.role,
         familyEmail: req.user.familyEmail,
+        patientEmail: req.user.patientEmail,
         targetUserId: req.targetUserId,
       },
     });

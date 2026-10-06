@@ -10,6 +10,7 @@ import Login from './pages/Auth/Login';
 import Register from './pages/Auth/Register';
 import GrandpaDashboard from './pages/Grandpa/GrandpaDashboard';
 import FamilyDashboard from './pages/Family/FamilyDashboard';
+import DoctorDashboard from './pages/Doctor/DoctorDashboard';
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -47,6 +48,16 @@ function App() {
                 element={
                   <ProtectedRoute allowedRoles={['family']}>
                     <FamilyDashboard />
+                  </ProtectedRoute>
+                } 
+              />
+
+              {/* Protected Doctor Dashboard */}
+              <Route 
+                path="/doctor" 
+                element={
+                  <ProtectedRoute allowedRoles={['doctor']}>
+                    <DoctorDashboard />
                   </ProtectedRoute>
                 } 
               />

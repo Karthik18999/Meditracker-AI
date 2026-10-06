@@ -11,6 +11,7 @@ const Register = () => {
   const [password, setPassword] = useState('');
   const [role, setRole] = useState('family');
   const [familyEmail, setFamilyEmail] = useState('');
+  const [patientEmail, setPatientEmail] = useState('');
   const [verificationCode, setVerificationCode] = useState('');
 
   const [error, setError] = useState('');
@@ -30,6 +31,11 @@ const Register = () => {
 
     if (role === 'grandpa' && !familyEmail) {
       setError("Please link Grandpa to a Family Monitor's email address.");
+      return;
+    }
+
+    if (role === 'doctor' && !patientEmail) {
+      setError("Please link Doctor account to a Patient's email address.");
       return;
     }
 
@@ -60,10 +66,12 @@ const Register = () => {
     setSubmitting(true);
 
     try {
-      await register(name, email, password, role, familyEmail, verificationCode.trim());
+      await register(name, email, password, role, familyEmail, patientEmail, verificationCode.trim());
 
       if (role === 'grandpa') {
         navigate('/grandpa');
+      } else if (role === 'doctor') {
+        navigate('/doctor');
       } else {
         navigate('/family');
       }
@@ -197,28 +205,39 @@ const Register = () => {
                   <label className="block text-sm font-semibold text-slate-600 dark:text-slate-300 mb-1.5">
                     Choose Mode / Role
                   </label>
-                  <div className="grid grid-cols-2 gap-3 mt-1">
+                  <div className="grid grid-cols-3 gap-2 mt-1">
                     <button
                       type="button"
                       onClick={() => setRole('family')}
-                      className={`py-2.5 rounded-xl border text-sm font-bold transition-all ${
+                      className={`py-2 rounded-xl border text-xs sm:text-sm font-bold transition-all ${
                         role === 'family'
                           ? 'border-emerald-500 bg-emerald-500/10 text-emerald-600 dark:text-emerald-400'
                           : 'border-slate-200 dark:border-slate-800 text-slate-500 hover:bg-slate-100 dark:hover:bg-slate-900'
                       }`}
                     >
-                      Family Monitor
+                      Family
                     </button>
                     <button
                       type="button"
                       onClick={() => setRole('grandpa')}
-                      className={`py-2.5 rounded-xl border text-sm font-bold transition-all ${
+                      className={`py-2 rounded-xl border text-xs sm:text-sm font-bold transition-all ${
                         role === 'grandpa'
                           ? 'border-emerald-500 bg-emerald-500/10 text-emerald-600 dark:text-emerald-400'
                           : 'border-slate-200 dark:border-slate-800 text-slate-500 hover:bg-slate-100 dark:hover:bg-slate-900'
                       }`}
                     >
-                      Grandpa Mode
+                      Grandpa
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => setRole('doctor')}
+                      className={`py-2 rounded-xl border text-xs sm:text-sm font-bold transition-all ${
+                        role === 'doctor'
+                          ? 'border-emerald-500 bg-emerald-500/10 text-emerald-600 dark:text-emerald-400'
+                          : 'border-slate-200 dark:border-slate-800 text-slate-500 hover:bg-slate-100 dark:hover:bg-slate-900'
+                      }`}
+                    >
+                      Doctor
                     </button>
                   </div>
                 </div>
@@ -243,6 +262,31 @@ const Register = () => {
                         placeholder="family@example.com"
                         className="w-full pl-11 pr-4 py-2.5 bg-white/50 dark:bg-slate-900/50 border border-slate-200 dark:border-slate-800 rounded-xl focus:outline-none focus:ring-2 focus:ring-emerald-500 text-slate-800 dark:text-white transition-all text-sm"
                         required={role === 'grandpa'}
+                      />
+                    </div>
+                  </motion.div>
+                )}
+
+                {role === 'doctor' && (
+                  <motion.div
+                    initial={{ opacity: 0, height: 0 }}
+                    animate={{ opacity: 1, height: 'auto' }}
+                    className="space-y-1.5 pt-1"
+                  >
+                    <label className="block text-sm font-semibold text-slate-600 dark:text-slate-300 mb-1">
+                      Patient's Email Link
+                    </label>
+                    <div className="relative">
+                      <span className="absolute inset-y-0 left-0 pl-3.5 flex items-center text-slate-400">
+                        <LinkIcon className="w-5 h-5" />
+                      </span>
+                      <input
+                        type="email"
+                        value={patientEmail}
+                        onChange={(e) => setPatientEmail(e.target.value)}
+                        placeholder="patient@example.com"
+                        className="w-full pl-11 pr-4 py-2.5 bg-white/50 dark:bg-slate-900/50 border border-slate-200 dark:border-slate-800 rounded-xl focus:outline-none focus:ring-2 focus:ring-emerald-500 text-slate-800 dark:text-white transition-all text-sm"
+                        required={role === 'doctor'}
                       />
                     </div>
                   </motion.div>

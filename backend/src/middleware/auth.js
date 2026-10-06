@@ -20,12 +20,18 @@ const protect = async (req, res, next) => {
       req.user = currentUser;
       req.targetUserId = currentUser._id;
 
-      // Transparently route grandpa requests to the linked family account for data operations
+      // Transparently route grandpa/doctor requests to the linked family/patient account for data operations
       if (currentUser.role === 'grandpa' && currentUser.familyEmail) {
         const familyUser = await User.findOne({ email: currentUser.familyEmail });
         if (familyUser) {
           req.grandpaUser = currentUser;
           req.targetUserId = familyUser._id;
+        }
+      } else if (currentUser.role === 'doctor' && currentUser.patientEmail) {
+        const patientUser = await User.findOne({ email: currentUser.patientEmail });
+        if (patientUser) {
+          req.doctorUser = currentUser;
+          req.targetUserId = patientUser._id;
         }
       }
       next();

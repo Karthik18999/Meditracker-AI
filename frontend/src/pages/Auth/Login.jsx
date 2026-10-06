@@ -26,6 +26,8 @@ const Login = () => {
       const user = await login(email, password);
       if (user.role === 'grandpa') {
         navigate('/grandpa');
+      } else if (user.role === 'doctor') {
+        navigate('/doctor');
       } else {
         navigate('/family');
       }
