@@ -1,4 +1,5 @@
 const nodemailer = require('nodemailer');
+const https = require('https');
 
 // Set up email transporter
 let transporter;
@@ -57,10 +58,63 @@ try {
   console.error('[Notification Service] Failed to initialize nodemailer:', error.message);
 }
 
+// Brevo REST API Helper
+const sendViaBrevoAPI = (to, subject, text, html) => {
+  return new Promise((resolve, reject) => {
+    const apiKey = process.env.BREVO_KEY || process.env.BREVO_API_KEY || process.env.EMAIL_PASS;
+    const senderEmail = process.env.BREVO_USER || process.env.EMAIL_USER || 'karthikchitikela187@gmail.com';
+    const payload = JSON.stringify({
+      sender: { name: 'MediTracker AI', email: senderEmail },
+      to: [{ email: to }],
+      subject: subject,
+      htmlContent: html || `<p>${text}</p>`,
+    });
+
+    const req = https.request({
+      hostname: 'api.brevo.com',
+      path: '/v3/smtp/email',
+      method: 'POST',
+      headers: {
+        'accept': 'application/json',
+        'api-key': apiKey,
+        'content-type': 'application/json',
+        'content-length': Buffer.byteLength(payload),
+      },
+    }, res => {
+      let body = '';
+      res.on('data', chunk => body += chunk);
+      res.on('end', () => {
+        if (res.statusCode >= 200 && res.statusCode < 300) {
+          try {
+            resolve(JSON.parse(body));
+          } catch (e) {
+            resolve({ messageId: 'brevo-success' });
+          }
+        } else {
+          reject(new Error(`Brevo API Error (${res.statusCode}): ${body}`));
+        }
+      });
+    });
+
+    req.on('error', err => reject(err));
+    req.write(payload);
+    req.end();
+  });
+};
+
 /**
  * Sends an email notification
  */
 const sendEmail = async (to, subject, text, html) => {
+  const brevoKey = process.env.BREVO_KEY || process.env.BREVO_API_KEY;
+  if (process.env.EMAIL_SERVICE === 'brevo' && brevoKey) {
+    try {
+      return await sendViaBrevoAPI(to, subject, text, html);
+    } catch (apiError) {
+      console.warn('[Notification Service] Brevo API attempt failed, falling back to SMTP:', apiError.message);
+    }
+  }
+
   try {
     if (!transporter) {
       transporter = createTransporter();
