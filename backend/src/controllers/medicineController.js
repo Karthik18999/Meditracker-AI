@@ -114,12 +114,12 @@ const createMedicine = async (req, res, next) => {
     isAfternoon,
     isNight,
     customTimes,
+    times,
     foodRelation,
     doctorNotes,
     color,
     type,
     imageUrl,
-    // Inventory fields if passed together
     currentStock,
     minStock,
     dosePerDay,
@@ -131,17 +131,27 @@ const createMedicine = async (req, res, next) => {
   try {
     const userId = req.targetUserId || req.user.id;
 
+    let morningFlag = Boolean(isMorning);
+    let afternoonFlag = Boolean(isAfternoon);
+    let nightFlag = Boolean(isNight);
+
+    if (Array.isArray(times)) {
+      if (times.some(t => t.period === 'morning' || t.time === '08:00')) morningFlag = true;
+      if (times.some(t => t.period === 'afternoon' || t.time === '13:00' || t.time === '14:00')) afternoonFlag = true;
+      if (times.some(t => t.period === 'night' || t.time === '20:00')) nightFlag = true;
+    }
+
     const medicine = await Medicine.create({
       name,
       dosage,
-      isMorning,
-      isAfternoon,
-      isNight,
-      customTimes,
+      isMorning: morningFlag,
+      isAfternoon: afternoonFlag,
+      isNight: nightFlag,
+      customTimes: customTimes || [],
       foodRelation,
       doctorNotes,
-      color,
-      type,
+      color: color || '#10b981',
+      type: type || 'tablet',
       imageUrl,
       userId,
     });
@@ -152,7 +162,7 @@ const createMedicine = async (req, res, next) => {
       userId,
       currentStock: currentStock || 0,
       minStock: minStock || 10,
-      dosePerDay: dosePerDay || (Number(isMorning) + Number(isAfternoon) + Number(isNight) + (customTimes ? customTimes.length : 0)) || 1,
+      dosePerDay: dosePerDay || (Number(morningFlag) + Number(afternoonFlag) + Number(nightFlag) + (customTimes ? customTimes.length : 0)) || 1,
       supplier: supplier || '',
       purchaseDate: purchaseDate ? new Date(purchaseDate) : undefined,
       expiryDate: expiryDate ? new Date(expiryDate) : undefined,
