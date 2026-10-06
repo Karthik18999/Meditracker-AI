@@ -289,7 +289,7 @@ const getReportData = async (req, res, next) => {
     const missedDoses = schedules.filter(s => s.isMissed).length;
     const skippedDoses = schedules.filter(s => s.isSkipped).length;
 
-    const complianceRate = totalDoses > 0 ? Math.round((completedDoses / totalDoses) * 100) : 100;
+    const complianceRate = totalDoses > 0 ? Math.round((completedDoses / totalDoses) * 100) : 0;
 
     // Group logs by day to show trends
     const dailyStats = {};

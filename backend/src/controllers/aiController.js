@@ -48,7 +48,7 @@ const getAIInsights = async (req, res, next) => {
     const completed = schedules.filter(s => s.isCompleted).length;
     const missed = schedules.filter(s => s.isMissed).length;
     const total = schedules.length;
-    const rate = total > 0 ? Math.round((completed / total) * 100) : 100;
+    const rate = total > 0 ? Math.round((completed / total) * 100) : 0;
 
     // Find frequently missed medicines
     const logs = await MedicineLog.find({ userId, action: 'missed' }).populate('medicineId');
@@ -68,13 +68,15 @@ const getAIInsights = async (req, res, next) => {
     const criticalStocks = stockPredictions.filter(p => p.isCritical);
 
     // AI summary card creation
-    let summaryText = 'Grandpa is tracking well overall! ';
+    let summaryText = total === 0 
+      ? 'No medicine schedules recorded yet. Adherence compliance will calculate as daily doses are completed.' 
+      : 'Grandpa is tracking well overall! ';
     let riskAlerts = [];
 
-    if (rate < 70) {
+    if (total > 0 && rate < 70) {
       summaryText = 'Adherence is lower than recommended. Attention needed.';
       riskAlerts.push('Adherence rate has dropped below safety levels (70%). Consider reviewing dosage schedules.');
-    } else if (rate >= 90) {
+    } else if (total > 0 && rate >= 90) {
       summaryText = 'Outstanding compliance! Grandpa is taking his medicines exactly as scheduled.';
     }
 
@@ -192,7 +194,7 @@ const handleChatQuery = async (req, res, next) => {
     else if (query.includes('adherence') || query.includes('compliance') || query.includes('percentage') || query.includes('month')) {
       const completed = schedules.filter(s => s.isCompleted).length;
       const total = schedules.length;
-      const rate = total > 0 ? Math.round((completed / total) * 100) : 100;
+      const rate = total > 0 ? Math.round((completed / total) * 100) : 0;
 
       reply = `Grandpa's average medicine adherence rate sits at **${rate}%** across all registered historical doses.`;
       if (rate >= 90) {
