@@ -14,11 +14,14 @@ const createTransporter = () => {
   const emailPort = process.env.EMAIL_PORT || 587;
 
   if (emailHost && brevoUser && brevoKey && brevoUser !== 'test@example.com') {
-    console.log(`[Notification Service] Initialized Brevo/SMTP Transporter (${emailHost}:${emailPort}) for ${brevoUser}`);
+    console.log(`[Notification Service] Initialized Pooled SMTP Transporter (${emailHost}:${emailPort}) for ${brevoUser}`);
     return nodemailer.createTransport({
       host: emailHost,
       port: Number(emailPort),
       secure: Number(emailPort) === 465,
+      pool: true,
+      maxConnections: 5,
+      maxMessages: 100,
       auth: {
         user: brevoUser,
         pass: brevoKey,
@@ -58,7 +61,7 @@ try {
   console.error('[Notification Service] Failed to initialize nodemailer:', error.message);
 }
 
-// Brevo REST API Helper
+// Brevo REST API Helper (with 3-second fast timeout)
 const sendViaBrevoAPI = (to, subject, text, html) => {
   return new Promise((resolve, reject) => {
     const apiKey = process.env.BREVO_KEY || process.env.BREVO_API_KEY || process.env.EMAIL_PASS;
@@ -74,6 +77,7 @@ const sendViaBrevoAPI = (to, subject, text, html) => {
       hostname: 'api.brevo.com',
       path: '/v3/smtp/email',
       method: 'POST',
+      timeout: 3000,
       headers: {
         'accept': 'application/json',
         'api-key': apiKey,
@@ -96,6 +100,11 @@ const sendViaBrevoAPI = (to, subject, text, html) => {
       });
     });
 
+    req.on('timeout', () => {
+      req.destroy();
+      reject(new Error('Brevo REST API request timed out'));
+    });
+
     req.on('error', err => reject(err));
     req.write(payload);
     req.end();
@@ -111,7 +120,7 @@ const sendEmail = async (to, subject, text, html) => {
     try {
       return await sendViaBrevoAPI(to, subject, text, html);
     } catch (apiError) {
-      console.warn('[Notification Service] Brevo API attempt failed, falling back to SMTP:', apiError.message);
+      console.warn('[Notification Service] Brevo API attempt failed/timed out, falling back to pooled SMTP:', apiError.message);
     }
   }
 

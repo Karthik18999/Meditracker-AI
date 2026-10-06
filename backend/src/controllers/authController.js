@@ -50,12 +50,13 @@ const sendOTP = async (req, res, next) => {
       </div>
     `;
 
-    await sendEmail(
+    // Dispatch email asynchronously in background so response is instantaneous (<50ms)
+    sendEmail(
       cleanEmail,
       'MediTracker AI - Verification Code',
       `Your MediTracker AI verification code is: ${code}`,
       htmlBody
-    );
+    ).catch(err => console.error('[Notification Service] Background OTP dispatch error:', err.message));
 
     res.status(200).json({
       success: true,
