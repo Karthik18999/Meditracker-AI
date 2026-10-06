@@ -4,7 +4,7 @@ import { useSocket } from '../../context/SocketContext';
 import api from '../../services/api';
 import { motion, AnimatePresence } from 'framer-motion';
 import { 
-  Heart, Plus, Edit, Trash2, Calendar, TrendingUp, AlertCircle, Clock, 
+  HeartPulse, Plus, Edit, Trash2, Calendar, TrendingUp, AlertCircle, Clock, 
   ArrowRight, Bot, Download, Sparkles, Stethoscope, LogOut, Bell, 
   ShieldAlert, RefreshCw, Send, Check, Phone, PlusCircle, Trash, FileText
 } from 'lucide-react';
@@ -451,8 +451,8 @@ const FamilyDashboard = () => {
       {/* Mobile Top Header */}
       <header className="md:hidden bg-white dark:bg-slate-900 border-b border-slate-200 dark:border-slate-800 px-4 py-3 flex justify-between items-center sticky top-0 z-40">
         <div className="flex items-center gap-2.5">
-          <div className="p-1.5 bg-emerald-500/10 text-emerald-500 rounded-lg">
-            <Heart className="w-5 h-5 fill-emerald-500/20" />
+          <div className="p-1.5 bg-rose-500/10 text-rose-500 rounded-lg">
+            <HeartPulse className="w-5 h-5 text-rose-500 animate-pulse" />
           </div>
           <span className="font-extrabold text-lg bg-gradient-to-r from-emerald-600 to-teal-500 bg-clip-text text-transparent dark:from-emerald-400 dark:to-teal-300">
             MediTracker AI
@@ -476,8 +476,8 @@ const FamilyDashboard = () => {
       <aside className="hidden md:flex w-64 bg-white dark:bg-slate-900 border-r border-slate-200 dark:border-slate-800 p-6 flex-col justify-between shrink-0">
         <div>
           <div className="flex items-center gap-3 mb-8">
-            <div className="p-2 bg-emerald-500/10 text-emerald-500 rounded-xl">
-              <Heart className="w-6 h-6 fill-emerald-500/20" />
+            <div className="p-2 bg-rose-500/10 text-rose-500 rounded-xl">
+              <HeartPulse className="w-6 h-6 text-rose-500 animate-pulse" />
             </div>
             <h1 className="text-xl font-extrabold bg-gradient-to-r from-emerald-600 to-teal-500 bg-clip-text text-transparent dark:from-emerald-400 dark:to-teal-300">
               MediTracker AI

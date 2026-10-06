@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
 import { motion } from 'framer-motion';
-import { Heart, User, Mail, Lock, Link as LinkIcon, ArrowRight } from 'lucide-react';
+import { HeartPulse, User, Mail, Lock, Link as LinkIcon, ArrowRight } from 'lucide-react';
 
 const Register = () => {
   const [name, setName] = useState('');
@@ -65,7 +65,7 @@ const Register = () => {
       >
         <div className="text-center mb-6">
           <div className="inline-flex items-center justify-center p-3 bg-emerald-500/10 text-emerald-500 rounded-2xl mb-3">
-            <Heart className="w-8 h-8 fill-emerald-500/20" />
+            <HeartPulse className="w-8 h-8 text-rose-500 animate-pulse" />
           </div>
           <h1 className="text-3xl font-extrabold tracking-tight bg-gradient-to-r from-emerald-600 to-teal-500 bg-clip-text text-transparent dark:from-emerald-400 dark:to-teal-300">
             MediTracker AI
