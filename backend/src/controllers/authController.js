@@ -154,14 +154,20 @@ const resolveTargetUserId = async (user) => {
   if (user.role === 'grandpa' && user.familyEmail) {
     const familyUser = await User.findOne({ email: user.familyEmail.toLowerCase().trim() });
     if (familyUser) return familyUser._id;
-  } else if (user.role === 'doctor' && user.patientEmail) {
-    const patientUser = await User.findOne({ email: user.patientEmail.toLowerCase().trim() });
-    if (patientUser) {
-      if (patientUser.role === 'grandpa' && patientUser.familyEmail) {
-        const familyUser = await User.findOne({ email: patientUser.familyEmail.toLowerCase().trim() });
+  } else if (user.role === 'doctor') {
+    let targetUser = null;
+    if (user.patientEmail) {
+      targetUser = await User.findOne({ email: user.patientEmail.toLowerCase().trim() });
+    }
+    if (!targetUser && user.familyEmail) {
+      targetUser = await User.findOne({ email: user.familyEmail.toLowerCase().trim() });
+    }
+    if (targetUser) {
+      if (targetUser.role === 'grandpa' && targetUser.familyEmail) {
+        const familyUser = await User.findOne({ email: targetUser.familyEmail.toLowerCase().trim() });
         if (familyUser) return familyUser._id;
       }
-      return patientUser._id;
+      return targetUser._id;
     }
   }
   return user._id;

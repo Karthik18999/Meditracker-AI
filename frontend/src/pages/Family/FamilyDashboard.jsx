@@ -343,23 +343,47 @@ const FamilyDashboard = () => {
   return (
     <div className="min-h-screen bg-slate-50 dark:bg-slate-950 text-slate-800 dark:text-slate-100 flex flex-col md:flex-row transition-colors duration-300">
       
-      {/* Dynamic Emergency banner (Socket Event driven) */}
+      {/* High-Priority Emergency Banner */}
       <AnimatePresence>
         {activeEmergency && (
           <motion.div 
-            initial={{ y: -50, opacity: 0 }}
+            initial={{ y: -60, opacity: 0 }}
             animate={{ y: 0, opacity: 1 }}
-            exit={{ y: -50, opacity: 0 }}
-            className="fixed top-0 inset-x-0 bg-red-600 text-white font-black text-center p-4 z-50 flex items-center justify-center gap-4 shadow-xl"
+            exit={{ y: -60, opacity: 0 }}
+            className="fixed top-0 inset-x-0 bg-gradient-to-r from-red-600 via-rose-600 to-red-700 text-white font-black p-4 z-50 flex flex-wrap items-center justify-between gap-3 shadow-2xl border-b-4 border-red-800"
           >
-            <ShieldAlert className="w-8 h-8 animate-ping" />
-            <span>🚨 EMERGENCY BUTTON PRESSED BY GRANDPA! LIVE ALERT DISPATCHED.</span>
-            <button 
-              onClick={clearEmergency}
-              className="bg-white/20 hover:bg-white/30 text-white font-bold px-4 py-1.5 rounded-lg text-sm transition-all"
-            >
-              DISMISS
-            </button>
+            <div className="flex items-center gap-3 flex-1 min-w-[280px]">
+              <div className="p-2 bg-white/20 rounded-full animate-bounce">
+                <ShieldAlert className="w-7 h-7 text-white animate-pulse" />
+              </div>
+              <div>
+                <h3 className="text-base sm:text-lg font-black tracking-wide uppercase text-yellow-300 animate-pulse">
+                  🚨 CRITICAL ALERT: GRANDPA IS IN SERIOUS CONDITION / EMERGENCY MODE!
+                </h3>
+                <p className="text-xs sm:text-sm font-medium text-red-100">
+                  {activeEmergency.message || 'Help button activated on Grandpa Mode. Urgent attention required.'}
+                </p>
+              </div>
+            </div>
+
+            <div className="flex items-center gap-2">
+              {activeEmergency.latitude && activeEmergency.longitude && (
+                <a
+                  href={`https://maps.google.com/?q=${activeEmergency.latitude},${activeEmergency.longitude}`}
+                  target="_blank"
+                  rel="noreferrer"
+                  className="px-4 py-2 bg-white text-red-600 font-extrabold rounded-xl text-xs sm:text-sm shadow-md hover:bg-slate-100 transition-colors flex items-center gap-1.5"
+                >
+                  📍 Open Live GPS Location
+                </a>
+              )}
+              <button 
+                onClick={clearEmergency}
+                className="px-4 py-2 bg-red-950/60 hover:bg-red-900/80 text-white font-bold rounded-xl text-xs sm:text-sm transition-all border border-white/20"
+              >
+                DISMISS ALERT
+              </button>
+            </div>
           </motion.div>
         )}
       </AnimatePresence>

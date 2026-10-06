@@ -27,19 +27,26 @@ const protect = async (req, res, next) => {
           req.grandpaUser = currentUser;
           req.targetUserId = familyUser._id;
         }
-      } else if (currentUser.role === 'doctor' && currentUser.patientEmail) {
-        const patientUser = await User.findOne({ email: currentUser.patientEmail.toLowerCase().trim() });
-        if (patientUser) {
+      } else if (currentUser.role === 'doctor') {
+        let targetUser = null;
+        if (currentUser.patientEmail) {
+          targetUser = await User.findOne({ email: currentUser.patientEmail.toLowerCase().trim() });
+        }
+        if (!targetUser && currentUser.familyEmail) {
+          targetUser = await User.findOne({ email: currentUser.familyEmail.toLowerCase().trim() });
+        }
+
+        if (targetUser) {
           req.doctorUser = currentUser;
-          if (patientUser.role === 'grandpa' && patientUser.familyEmail) {
-            const familyUser = await User.findOne({ email: patientUser.familyEmail.toLowerCase().trim() });
+          if (targetUser.role === 'grandpa' && targetUser.familyEmail) {
+            const familyUser = await User.findOne({ email: targetUser.familyEmail.toLowerCase().trim() });
             if (familyUser) {
               req.targetUserId = familyUser._id;
             } else {
-              req.targetUserId = patientUser._id;
+              req.targetUserId = targetUser._id;
             }
           } else {
-            req.targetUserId = patientUser._id;
+            req.targetUserId = targetUser._id;
           }
         }
       }

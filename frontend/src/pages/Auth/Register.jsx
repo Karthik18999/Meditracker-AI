@@ -30,8 +30,8 @@ const Register = () => {
       return;
     }
 
-    if (role === 'doctor' && !patientEmail) {
-      setError("Please link Doctor account to a Patient's email address.");
+    if (role === 'doctor' && !familyEmail && !patientEmail) {
+      setError("Please link Doctor account to Grandpa or Family Monitor's email address.");
       return;
     }
 
@@ -219,23 +219,42 @@ const Register = () => {
               <motion.div
                 initial={{ opacity: 0, height: 0 }}
                 animate={{ opacity: 1, height: 'auto' }}
-                className="space-y-1.5 pt-1"
+                className="space-y-3 pt-1"
               >
-                <label className="block text-sm font-semibold text-slate-600 dark:text-slate-300 mb-1">
-                  Patient's Email Link
-                </label>
-                <div className="relative">
-                  <span className="absolute inset-y-0 left-0 pl-3.5 flex items-center text-slate-400">
-                    <LinkIcon className="w-5 h-5" />
-                  </span>
-                  <input
-                    type="email"
-                    value={patientEmail}
-                    onChange={(e) => setPatientEmail(e.target.value)}
-                    placeholder="patient@example.com"
-                    className="w-full pl-11 pr-4 py-2.5 bg-white/50 dark:bg-slate-900/50 border border-slate-200 dark:border-slate-800 rounded-xl focus:outline-none focus:ring-2 focus:ring-emerald-500 text-slate-800 dark:text-white transition-all text-sm"
-                    required={role === 'doctor'}
-                  />
+                <div>
+                  <label className="block text-sm font-semibold text-slate-600 dark:text-slate-300 mb-1">
+                    Family Monitor's Email
+                  </label>
+                  <div className="relative">
+                    <span className="absolute inset-y-0 left-0 pl-3.5 flex items-center text-slate-400">
+                      <LinkIcon className="w-5 h-5" />
+                    </span>
+                    <input
+                      type="email"
+                      value={familyEmail}
+                      onChange={(e) => setFamilyEmail(e.target.value)}
+                      placeholder="family@example.com"
+                      className="w-full pl-11 pr-4 py-2.5 bg-white/50 dark:bg-slate-900/50 border border-slate-200 dark:border-slate-800 rounded-xl focus:outline-none focus:ring-2 focus:ring-emerald-500 text-slate-800 dark:text-white transition-all text-sm"
+                    />
+                  </div>
+                </div>
+
+                <div>
+                  <label className="block text-sm font-semibold text-slate-600 dark:text-slate-300 mb-1">
+                    Grandpa / Patient's Email
+                  </label>
+                  <div className="relative">
+                    <span className="absolute inset-y-0 left-0 pl-3.5 flex items-center text-slate-400">
+                      <LinkIcon className="w-5 h-5" />
+                    </span>
+                    <input
+                      type="email"
+                      value={patientEmail}
+                      onChange={(e) => setPatientEmail(e.target.value)}
+                      placeholder="grandpa@example.com"
+                      className="w-full pl-11 pr-4 py-2.5 bg-white/50 dark:bg-slate-900/50 border border-slate-200 dark:border-slate-800 rounded-xl focus:outline-none focus:ring-2 focus:ring-emerald-500 text-slate-800 dark:text-white transition-all text-sm"
+                    />
+                  </div>
                 </div>
               </motion.div>
             )}
