@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { useAuth } from '../../context/AuthContext';
 import { useSocket } from '../../context/SocketContext';
 import api from '../../services/api';
@@ -60,6 +60,66 @@ const FamilyDashboard = () => {
 
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
+
+  // Web Audio API emergency alarm synthesizer
+  const audioCtxRef = useRef(null);
+  const alarmIntervalRef = useRef(null);
+
+  const startEmergencySound = () => {
+    try {
+      if (!audioCtxRef.current) {
+        const AudioCtx = window.AudioContext || window.webkitAudioContext;
+        if (!AudioCtx) return;
+        audioCtxRef.current = new AudioCtx();
+      }
+
+      const playUrgentBeep = () => {
+        if (!audioCtxRef.current) return;
+        const osc = audioCtxRef.current.createOscillator();
+        const gain = audioCtxRef.current.createGain();
+
+        osc.type = 'sawtooth';
+        osc.frequency.setValueAtTime(880, audioCtxRef.current.currentTime);
+        osc.frequency.exponentialRampToValueAtTime(440, audioCtxRef.current.currentTime + 0.35);
+
+        gain.gain.setValueAtTime(0.35, audioCtxRef.current.currentTime);
+        gain.gain.exponentialRampToValueAtTime(0.01, audioCtxRef.current.currentTime + 0.35);
+
+        osc.connect(gain);
+        gain.connect(audioCtxRef.current.destination);
+
+        osc.start();
+        osc.stop(audioCtxRef.current.currentTime + 0.35);
+      };
+
+      if (!alarmIntervalRef.current) {
+        playUrgentBeep();
+        alarmIntervalRef.current = setInterval(playUrgentBeep, 800);
+      }
+    } catch (e) {
+      console.warn('Emergency audio synth error:', e.message);
+    }
+  };
+
+  const stopEmergencySound = () => {
+    if (alarmIntervalRef.current) {
+      clearInterval(alarmIntervalRef.current);
+      alarmIntervalRef.current = null;
+    }
+    if (audioCtxRef.current) {
+      audioCtxRef.current.close().catch(() => {});
+      audioCtxRef.current = null;
+    }
+  };
+
+  useEffect(() => {
+    if (activeEmergency) {
+      startEmergencySound();
+    } else {
+      stopEmergencySound();
+    }
+    return () => stopEmergencySound();
+  }, [activeEmergency]);
 
   // Fetch all dashboard data
   const fetchDashboardData = async () => {
