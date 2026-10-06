@@ -21,7 +21,7 @@ const Register = () => {
   const { register, sendOTP } = useAuth();
   const navigate = useNavigate();
 
-  // Step 1: Submit Account Info & Request OTP
+  // Step 1: Submit Account Info & Request OTP Email
   const handleRequestOTP = async (e) => {
     e.preventDefault();
     if (!name || !email || !password) {
@@ -295,7 +295,7 @@ const Register = () => {
                 <button
                   type="submit"
                   disabled={submitting}
-                  className="w-full mt-4 py-3.5 px-4 bg-gradient-to-r from-emerald-600 to-teal-500 hover:from-emerald-700 hover:to-teal-600 text-white font-bold rounded-xl shadow-lg shadow-emerald-500/20 flex items-center justify-center gap-2 group transition-all duration-300 disabled:opacity-50"
+                  className="w-full mt-4 py-3.5 px-4 bg-gradient-to-r from-emerald-600 to-teal-500 hover:from-emerald-700 hover:to-teal-600 text-white font-bold rounded-xl shadow-lg shadow-emerald-500/20 flex items-center justify-center gap-2 group transition-all duration-300 disabled:opacity-50 text-base"
                 >
                   {submitting ? 'Sending Code...' : 'Send Verification Code'}
                   <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />

@@ -115,13 +115,13 @@ const registerUser = async (req, res, next) => {
     const userExists = await User.findOne({ email: cleanEmail });
 
     if (userExists && userExists.isVerified) {
-      return res.status(400).json({ success: false, message: 'User already exists' });
+      return res.status(400).json({ success: false, message: 'An account with this email address already exists. Please log in.' });
     }
 
     // Check verification code
     const record = pendingVerifications.get(cleanEmail);
     if (!record || record.code !== verificationCode?.toString()?.trim()) {
-      return res.status(400).json({ success: false, message: 'Invalid or expired email verification code. Please verify your email code.' });
+      return res.status(400).json({ success: false, message: 'Invalid or expired email verification code. Please check your code and try again.' });
     }
 
     let user;
