@@ -3,6 +3,7 @@
 <div align="center">
 
 ![MediTracker Banner](https://img.shields.io/badge/MediTracker%20AI-Healthcare%20%26%20Adherence%20Platform-0284c7?style=for-the-badge&logo=medicare&logoColor=white)
+![Version](https://img.shields.io/badge/Version-v1.0.0-10b981?style=for-the-badge)
 
 [![React](https://img.shields.io/badge/React-18.x-61DAFB?style=flat-square&logo=react&logoColor=black)](https://reactjs.org/)
 [![Node.js](https://img.shields.io/badge/Node.js-18.x+-339933?style=flat-square&logo=nodedotjs&logoColor=white)](https://nodejs.org/)
@@ -55,9 +56,15 @@
 
 ---
 
-### 🔐 4. Seamless Direct Authentication
-* **Streamlined Sign-up & Login**: Instant 1-step registration without cumbersome email verification wait times.
-* **Role-Based Access Control (RBAC)**: Dedicated permissions and token security for Doctor, Family, and Patient profiles.
+### 🏷️ 4. Persistent App Version & About Us Catalog
+* **Global Footer & Build Version (`v1.0.0`)**: Every view from Login/Register to all dashboards renders a persistent footer featuring the active version badge (`v1.0.0`).
+* **Interactive About Us Modal**: Includes an application overview, platform mission, medical disclaimer, and role-based feature catalogs accessible anywhere across the platform.
+
+---
+
+### 🫀 5. Dynamic Heartbeat Icon & Custom Favicon
+* **Custom SVG Favicon**: Displays a medical Heart + ECG Pulse Rate Waveform icon in the browser tab, bookmarks, and search suggestions.
+* **Animated Header Logos**: Headers use an animated heartbeat pulse rate icon (`HeartPulse`).
 
 ---
 
@@ -79,7 +86,7 @@ MediTracker AI/
 │   └── Dockerfile
 └── frontend/
     ├── src/
-    │   ├── components/      # Emergency alert banners, modals, protected routes
+    │   ├── components/      # Footer (v1.0.0 & About Us), ProtectedRoute, Banners
     │   ├── context/         # AuthContext, SocketContext (WebSockets)
     │   ├── pages/
     │   │   ├── Auth/        # Login & Register views
