@@ -19,7 +19,10 @@ const app = express();
 
 // Middleware
 app.use(cors({
-  origin: process.env.FRONTEND_URL || 'http://localhost:5173',
+  origin: (origin, callback) => {
+    // Allow requests with no origin (mobile/curl/postman) or any local dev origin
+    callback(null, true);
+  },
   credentials: true
 }));
 app.use(express.json());

@@ -26,7 +26,20 @@ api.interceptors.request.use(
 api.interceptors.response.use(
   (response) => response.data,
   (error) => {
-    const message = error.response?.data?.message || 'Something went wrong with the API connection.';
+    let message = 'Cannot connect to backend server. Make sure the backend server (port 5000) is running.';
+    
+    if (error.response) {
+      if (typeof error.response.data === 'string' && error.response.data.trim()) {
+        message = error.response.data;
+      } else if (error.response.data?.message) {
+        message = error.response.data.message;
+      } else {
+        message = `Server error (${error.response.status}). Please try again.`;
+      }
+    } else if (error.message && error.message !== 'Network Error') {
+      message = error.message;
+    }
+
     return Promise.reject(new Error(message));
   }
 );
