@@ -2,19 +2,37 @@ import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { 
   HeartPulse, Info, X, ShieldCheck, Stethoscope, Heart, Users, BookOpen, 
-  Phone, Mail, Lock, FileText, HelpCircle, Star, MessageSquare, MapPin, Pill, RefreshCw 
+  Phone, Mail, Lock, FileText, HelpCircle, Star, MessageSquare, MapPin, Pill 
 } from 'lucide-react';
 
-const Footer = ({ className = '' }) => {
+const Footer = ({ variant = 'full', className = '' }) => {
   const [activeModal, setActiveModal] = useState(null);
   const [showFloatingChat, setShowFloatingChat] = useState(false);
   const version = 'v1.0.0';
 
   const closeModal = () => setActiveModal(null);
 
+  // Simple minimal version footer (For Auth / Opening Pages: Login & Register)
+  if (variant === 'simple') {
+    return (
+      <footer className={`py-4 px-6 text-center text-xs text-slate-500 dark:text-slate-400 border-t border-slate-200/50 dark:border-slate-800/50 flex items-center justify-between gap-3 ${className}`}>
+        <div className="flex items-center gap-2 font-medium">
+          <HeartPulse className="w-4 h-4 text-rose-500 animate-pulse" />
+          <span className="font-extrabold text-slate-700 dark:text-slate-300">MediTracker AI</span>
+          <span className="bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 text-[10px] font-bold px-2 py-0.5 rounded-full border border-emerald-500/20">
+            {version}
+          </span>
+        </div>
+        <div className="text-slate-400 text-[11px] font-medium">
+          © {new Date().getFullYear()} MediTracker AI Inc. All rights reserved.
+        </div>
+      </footer>
+    );
+  }
+
+  // Full Rich Health Application Footer (For Application Dashboards: Family, Patient, Doctor)
   return (
     <>
-      {/* Professional Health Application Footer */}
       <footer className={`bg-slate-900 text-slate-300 border-t border-slate-800/80 pt-10 pb-8 px-6 sm:px-12 mt-12 w-full select-none ${className}`}>
         <div className="max-w-7xl mx-auto flex flex-col md:flex-row justify-between items-start md:items-center gap-8">
           
@@ -35,7 +53,7 @@ const Footer = ({ className = '' }) => {
             </p>
           </div>
 
-          {/* Right Side: Structured Link Catalog Grid (Matching Reference Design) */}
+          {/* Right Side: Structured Link Catalog Grid */}
           <div className="grid grid-cols-2 sm:grid-cols-4 gap-x-8 gap-y-3 text-xs sm:text-sm font-medium w-full md:w-auto">
             {/* Column 1 */}
             <div className="space-y-2.5">
@@ -117,7 +135,7 @@ const Footer = ({ className = '' }) => {
         </div>
       </footer>
 
-      {/* Floating Support/Chat Button (Matching reference design bottom-right bubble) */}
+      {/* Floating Support/Chat Button */}
       <div className="fixed bottom-6 right-6 z-40">
         <button
           onClick={() => setShowFloatingChat(prev => !prev)}
@@ -152,7 +170,7 @@ const Footer = ({ className = '' }) => {
               </div>
 
               <p className="text-xs text-slate-500 dark:text-slate-400 mb-3">
-                Need immediate help or compliance guidance? Log into your dashboard to query the live AI assistant or contact emergency support.
+                Need immediate help or compliance guidance? Query the live AI assistant on your dashboard or contact emergency support.
               </p>
 
               <div className="space-y-2 text-xs">

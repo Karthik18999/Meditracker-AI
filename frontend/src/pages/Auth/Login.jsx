@@ -133,7 +133,7 @@ const Login = () => {
           </div>
         </div>
         
-        <Footer className="mt-6 border-t-0" />
+        <Footer variant="simple" className="mt-6 border-t-0" />
       </motion.div>
     </div>
   );
