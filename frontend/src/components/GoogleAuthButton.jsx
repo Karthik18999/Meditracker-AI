@@ -97,10 +97,11 @@ const GoogleAuthButton = ({ isRegister = false, className = '' }) => {
         navigate('/family');
       }
     } catch (err) {
-      if (!isRegister) {
-        setError(err.message || 'No account found with this Google email. Please create an account first.');
+      if (!isRegister && (err.message?.includes('No account found') || err.message?.includes('ACCOUNT_NOT_FOUND'))) {
+        setPendingGoogleData(gData);
+        setShowRoleModal(true);
       } else {
-        setError(err.message || 'Google registration failed.');
+        setError(err.message || 'Google authentication failed.');
       }
     } finally {
       setSubmitting(false);
