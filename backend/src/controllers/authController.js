@@ -355,12 +355,9 @@ const forgotPassword = async (req, res, next) => {
       htmlBody
     ).catch(err => console.error('[Notification Service] Password reset OTP error:', err.message));
 
-    const allowDevCode = process.env.HIDE_DEV_OTP !== 'true';
-
     res.status(200).json({
       success: true,
-      message: `Password reset code generated and sent to ${cleanEmail}.`,
-      devCode: allowDevCode ? code : undefined,
+      message: `Verification code sent to ${cleanEmail}. Please check your email inbox.`,
     });
   } catch (error) {
     next(error);
