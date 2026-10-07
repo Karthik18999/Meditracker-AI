@@ -322,7 +322,21 @@ const DoctorDashboard = () => {
   };
 
   return (
-    <div className="min-h-screen bg-slate-50 dark:bg-slate-950 text-slate-900 dark:text-slate-100 transition-colors pb-24 md:pb-8">
+    <div className="min-h-screen bg-slate-50 dark:bg-slate-950 text-slate-900 dark:text-slate-100 transition-colors pb-24 md:pb-8 relative overflow-hidden">
+      {/* Ambient Heart & Beats Watermark Background */}
+      <div className="fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 pointer-events-none opacity-[0.035] dark:opacity-[0.05] z-0 flex flex-col items-center justify-center select-none">
+        <HeartPulse className="w-[500px] h-[500px] sm:w-[650px] sm:h-[650px] text-emerald-600 dark:text-emerald-400 animate-heartbeat" />
+        <svg className="w-[550px] sm:w-[750px] h-24 -mt-20 text-emerald-600 dark:text-emerald-400" viewBox="0 0 500 100">
+          <path
+            d="M0,50 L120,50 L140,15 L160,85 L180,25 L200,75 L220,50 L500,50"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="5"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+          />
+        </svg>
+      </div>
       {/* Header */}
       <header className="sticky top-0 z-40 bg-white/80 dark:bg-slate-900/80 backdrop-blur-md border-b border-slate-200 dark:border-slate-800 px-4 sm:px-8 py-4">
         <div className="max-w-7xl mx-auto flex flex-wrap justify-between items-center gap-4">
