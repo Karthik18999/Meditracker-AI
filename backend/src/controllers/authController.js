@@ -255,10 +255,10 @@ const googleAuth = async (req, res, next) => {
     let user = await User.findOne({ email: cleanEmail });
 
     if (!user) {
-      if (isRegister === false && !role) {
+      if (isRegister === false) {
         return res.status(404).json({
           success: false,
-          message: 'No account found with this Google email. Please create an account first.',
+          message: 'No account found with this Google email address. Please sign up first.',
         });
       }
 

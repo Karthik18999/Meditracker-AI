@@ -82,7 +82,7 @@ const GoogleAuthButton = ({ isRegister = false, className = '' }) => {
       const payload = {
         ...gData,
         isRegister,
-        role: selectedRole || role,
+        role: isRegister ? (selectedRole || role) : selectedRole,
         familyEmail: fEmail || familyEmail,
         patientEmail: pEmail || patientEmail,
       };
