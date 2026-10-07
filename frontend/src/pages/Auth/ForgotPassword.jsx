@@ -33,10 +33,15 @@ const ForgotPassword = () => {
 
     try {
       const res = await forgotPassword(email);
-      setInfoMessage(res.message || `Verification code sent to ${email}`);
+      if (res.devCode) {
+        setCode(res.devCode);
+        setInfoMessage(`Verification code sent to ${email}. (Test Code: ${res.devCode})`);
+      } else {
+        setInfoMessage(res.message || `Verification code sent to ${email}. Please check your inbox.`);
+      }
       setStep(2);
     } catch (err) {
-      setError(err.message || 'Failed to send reset code. Please check your email.');
+      setError(err.message || 'Failed to send reset code. Please verify your registered email address.');
     } finally {
       setSubmitting(false);
     }

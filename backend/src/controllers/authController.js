@@ -347,6 +347,8 @@ const forgotPassword = async (req, res, next) => {
       </div>
     `;
 
+    const isMock = (!process.env.BREVO_KEY && !process.env.BREVO_API_KEY && !process.env.EMAIL_PASS && !process.env.EMAIL_USER);
+
     // Dispatch email asynchronously in background
     sendEmail(
       cleanEmail,
@@ -358,6 +360,7 @@ const forgotPassword = async (req, res, next) => {
     res.status(200).json({
       success: true,
       message: `Password reset code sent to ${cleanEmail}. Please check your inbox.`,
+      devCode: isMock ? code : undefined,
     });
   } catch (error) {
     next(error);
