@@ -8,7 +8,6 @@ import ProtectedRoute from './components/ProtectedRoute';
 // Pages
 import Login from './pages/Auth/Login';
 import Register from './pages/Auth/Register';
-import ForgotPassword from './pages/Auth/ForgotPassword';
 import PatientDashboard from './pages/Patient/PatientDashboard';
 import FamilyDashboard from './pages/Family/FamilyDashboard';
 import DoctorDashboard from './pages/Doctor/DoctorDashboard';
@@ -32,7 +31,6 @@ function App() {
               {/* Public Routes */}
               <Route path="/login" element={<Login />} />
               <Route path="/register" element={<Register />} />
-              <Route path="/forgot-password" element={<ForgotPassword />} />
 
               {/* Protected Patient Mode */}
               <Route 
