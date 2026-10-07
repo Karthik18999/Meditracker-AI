@@ -116,19 +116,22 @@ const sendViaBrevoAPI = (to, subject, text, html) => {
  */
 const sendEmail = async (to, subject, text, html) => {
   const brevoKey = process.env.BREVO_KEY || process.env.BREVO_API_KEY;
-  if (brevoKey) {
+  
+  // Use Brevo REST API only if key is an API v3 key (starts with 'xkeysib-')
+  if (brevoKey && brevoKey.startsWith('xkeysib-')) {
     try {
       return await sendViaBrevoAPI(to, subject, text, html);
     } catch (apiError) {
-      console.warn('[Notification Service] Brevo API attempt failed:', apiError.message);
+      console.warn('[Notification Service] Brevo REST API attempt failed, falling back to SMTP:', apiError.message);
     }
   }
 
+  // Use Nodemailer SMTP Transporter (supports 'xsmtpsib-' SMTP Relay keys, Gmail, etc.)
   try {
     if (!transporter) {
       transporter = createTransporter();
     }
-    const fromAddress = process.env.EMAIL_FROM || process.env.BREVO_USER || process.env.EMAIL_USER || 'no-reply@meditracker.ai';
+    const fromAddress = process.env.EMAIL_FROM || process.env.BREVO_USER || process.env.EMAIL_USER || 'karthikchitikela187@gmail.com';
     const info = await transporter.sendMail({
       from: `"MediTracker AI" <${fromAddress}>`,
       to,
@@ -136,6 +139,7 @@ const sendEmail = async (to, subject, text, html) => {
       text,
       html: html || text,
     });
+    console.log(`[Notification Service] Email successfully sent to ${to} (MessageID: ${info.messageId})`);
     return info;
   } catch (error) {
     console.error(`[Notification Service] SMTP dispatch error to ${to}:`, error.message);
