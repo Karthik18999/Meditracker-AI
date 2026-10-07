@@ -116,11 +116,11 @@ const sendViaBrevoAPI = (to, subject, text, html) => {
  */
 const sendEmail = async (to, subject, text, html) => {
   const brevoKey = process.env.BREVO_KEY || process.env.BREVO_API_KEY;
-  if (process.env.EMAIL_SERVICE === 'brevo' && brevoKey) {
+  if (brevoKey) {
     try {
       return await sendViaBrevoAPI(to, subject, text, html);
     } catch (apiError) {
-      console.warn('[Notification Service] Brevo API attempt failed/timed out, falling back to pooled SMTP:', apiError.message);
+      console.warn('[Notification Service] Brevo API attempt failed:', apiError.message);
     }
   }
 
@@ -138,8 +138,8 @@ const sendEmail = async (to, subject, text, html) => {
     });
     return info;
   } catch (error) {
-    console.error(`[Notification Service] Error sending email to ${to}:`, error.message);
-    throw error;
+    console.error(`[Notification Service] SMTP dispatch error to ${to}:`, error.message);
+    return { error: error.message };
   }
 };
 

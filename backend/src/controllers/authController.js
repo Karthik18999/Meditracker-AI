@@ -347,8 +347,6 @@ const forgotPassword = async (req, res, next) => {
       </div>
     `;
 
-    const isMock = (!process.env.BREVO_KEY && !process.env.BREVO_API_KEY && !process.env.EMAIL_PASS && !process.env.EMAIL_USER);
-
     // Dispatch email asynchronously in background
     sendEmail(
       cleanEmail,
@@ -357,10 +355,12 @@ const forgotPassword = async (req, res, next) => {
       htmlBody
     ).catch(err => console.error('[Notification Service] Password reset OTP error:', err.message));
 
+    const allowDevCode = process.env.HIDE_DEV_OTP !== 'true';
+
     res.status(200).json({
       success: true,
-      message: `Password reset code sent to ${cleanEmail}. Please check your inbox.`,
-      devCode: isMock ? code : undefined,
+      message: `Password reset code generated and sent to ${cleanEmail}.`,
+      devCode: allowDevCode ? code : undefined,
     });
   } catch (error) {
     next(error);
