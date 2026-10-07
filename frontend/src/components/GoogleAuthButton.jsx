@@ -16,15 +16,27 @@ const GoogleAuthButton = ({ isRegister = false, className = '' }) => {
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState('');
 
-  const GOOGLE_CLIENT_ID = import.meta.env.VITE_GOOGLE_CLIENT_ID;
+  const GOOGLE_CLIENT_ID = import.meta.env.VITE_GOOGLE_CLIENT_ID || '355205856343-04kd72s0fa3h40bi1tjat6ejc6pqts03.apps.googleusercontent.com';
 
   useEffect(() => {
-    if (GOOGLE_CLIENT_ID && window.google) {
-      window.google.accounts.id.initialize({
-        client_id: GOOGLE_CLIENT_ID,
-        callback: handleGoogleResponse,
-      });
-    }
+    const initGoogle = () => {
+      if (GOOGLE_CLIENT_ID && window.google?.accounts?.id) {
+        window.google.accounts.id.initialize({
+          client_id: GOOGLE_CLIENT_ID,
+          callback: handleGoogleResponse,
+        });
+      }
+    };
+
+    initGoogle();
+    const timer = setInterval(() => {
+      if (window.google?.accounts?.id) {
+        initGoogle();
+        clearInterval(timer);
+      }
+    }, 500);
+
+    return () => clearInterval(timer);
   }, [GOOGLE_CLIENT_ID]);
 
   // Decode JWT helper for Google Credential response
