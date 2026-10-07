@@ -76,10 +76,16 @@ const Register = () => {
 
         <div className="glass-card rounded-3xl p-6 sm:p-8 border border-white/20 dark:border-white/5 shadow-2xl relative overflow-hidden">
           
-          <div className="flex items-center justify-between mb-6">
-            <h2 className="text-2xl font-bold text-slate-800 dark:text-white">
-              Create Account
+          <div className="mb-6">
+            <h2 className="text-3xl font-extrabold text-slate-800 dark:text-white">
+              Create your account
             </h2>
+            <p className="text-sm text-slate-500 dark:text-slate-400 mt-1.5 font-medium">
+              Already have an account?{' '}
+              <Link to="/login" className="text-emerald-600 dark:text-emerald-400 font-bold hover:underline">
+                Sign In
+              </Link>
+            </p>
           </div>
 
           {/* Error Banner */}
@@ -92,6 +98,16 @@ const Register = () => {
               {error}
             </motion.div>
           )}
+
+          <div className="mb-5">
+            <GoogleAuthButton isRegister={true} />
+          </div>
+
+          <div className="my-5 flex items-center">
+            <div className="flex-grow border-t border-slate-200 dark:border-slate-800"></div>
+            <span className="flex-shrink mx-4 text-xs font-semibold text-slate-400">Or with email and password</span>
+            <div className="flex-grow border-t border-slate-200 dark:border-slate-800"></div>
+          </div>
 
           <form onSubmit={handleRegister} className="space-y-4">
             <div>
@@ -270,23 +286,6 @@ const Register = () => {
               <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
             </button>
           </form>
-
-          <div className="my-4 flex items-center">
-            <div className="flex-grow border-t border-slate-200 dark:border-slate-800"></div>
-            <span className="flex-shrink mx-4 text-xs uppercase font-extrabold text-slate-400">OR</span>
-            <div className="flex-grow border-t border-slate-200 dark:border-slate-800"></div>
-          </div>
-
-          <GoogleAuthButton isRegister={true} />
-
-          <div className="mt-6 text-center border-t border-slate-200/50 dark:border-slate-800/50 pt-5">
-            <p className="text-sm text-slate-500 dark:text-slate-400">
-              Already have an account?{' '}
-              <Link to="/login" className="text-emerald-600 dark:text-emerald-400 font-bold hover:underline">
-                Sign In
-              </Link>
-            </p>
-          </div>
         </div>
 
         <Footer variant="simple" className="mt-6 border-t-0" />

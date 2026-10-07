@@ -113,9 +113,12 @@ const GoogleAuthButton = ({ isRegister = false, className = '' }) => {
       const client = window.google.accounts.oauth2.initTokenClient({
         client_id: GOOGLE_CLIENT_ID,
         scope: 'email profile openid',
+        prompt: 'select_account',
         callback: async (tokenResponse) => {
           if (tokenResponse.error) {
-            setError('Google sign-in popup was cancelled or failed.');
+            if (tokenResponse.error !== 'popup_closed_by_user') {
+              setError('Google sign-in popup was cancelled or failed.');
+            }
             return;
           }
           if (tokenResponse.access_token) {
@@ -180,7 +183,7 @@ const GoogleAuthButton = ({ isRegister = false, className = '' }) => {
           type="button"
           onClick={handlePromptGoogle}
           disabled={submitting}
-          className="w-full py-3 px-4 bg-white dark:bg-slate-900 hover:bg-slate-50 dark:hover:bg-slate-800 text-slate-700 dark:text-slate-200 font-bold rounded-xl border border-slate-200 dark:border-slate-800 shadow-sm flex items-center justify-center gap-3 transition-all cursor-pointer text-sm"
+          className="w-full py-3 px-4 bg-white dark:bg-slate-900 hover:bg-slate-50 dark:hover:bg-slate-800 text-slate-800 dark:text-slate-100 font-bold rounded-xl border border-slate-300 dark:border-slate-700 shadow-sm flex items-center justify-center gap-3 transition-all cursor-pointer text-sm"
         >
           <svg className="w-5 h-5 shrink-0" viewBox="0 0 24 24">
             <path
@@ -200,7 +203,7 @@ const GoogleAuthButton = ({ isRegister = false, className = '' }) => {
               d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.06l3.66 2.84c.87-2.6 3.3-4.52 6.16-4.52z"
             />
           </svg>
-          <span>{submitting ? 'Connecting Google...' : isRegister ? 'Sign up with Google' : 'Continue with Google'}</span>
+          <span>{submitting ? 'Connecting Google...' : 'Google'}</span>
         </button>
 
         {error && (
