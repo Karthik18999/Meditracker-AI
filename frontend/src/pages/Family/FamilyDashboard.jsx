@@ -564,15 +564,15 @@ const FamilyDashboard = () => {
 
       {/* Main Panel Content Area */}
       <main className="flex-1 p-4 sm:p-6 md:p-8 pb-24 md:pb-8 overflow-y-auto max-h-screen relative">
-        {/* Ambient Heart & Beats Watermark Background */}
-        <div className="fixed top-1/2 left-[55%] -translate-x-1/2 -translate-y-1/2 pointer-events-none opacity-[0.04] dark:opacity-[0.06] z-0 flex flex-col items-center justify-center select-none">
-          <HeartPulse className="w-[450px] h-[450px] sm:w-[580px] sm:h-[580px] text-emerald-600 dark:text-emerald-400 animate-heartbeat" />
-          <svg className="w-[500px] sm:w-[650px] h-20 -mt-16 text-emerald-600 dark:text-emerald-400" viewBox="0 0 500 100">
+        {/* Ambient Heart & Beats Watermark Background (Brighter & Vibrant) */}
+        <div className="fixed top-1/2 left-[55%] -translate-x-1/2 -translate-y-1/2 pointer-events-none opacity-20 dark:opacity-25 z-0 flex flex-col items-center justify-center select-none">
+          <HeartPulse className="w-[500px] h-[500px] sm:w-[650px] sm:h-[650px] text-rose-500 dark:text-rose-400 animate-heartbeat drop-shadow-md" />
+          <svg className="w-[550px] sm:w-[750px] h-24 -mt-20 text-emerald-500 dark:text-emerald-400" viewBox="0 0 500 100">
             <path
-              d="M0,50 L120,50 L140,15 L160,85 L180,25 L200,75 L220,50 L500,50"
+              d="M0,50 L120,50 L140,10 L160,90 L180,20 L200,80 L220,50 L500,50"
               fill="none"
               stroke="currentColor"
-              strokeWidth="5"
+              strokeWidth="7"
               strokeLinecap="round"
               strokeLinejoin="round"
             />

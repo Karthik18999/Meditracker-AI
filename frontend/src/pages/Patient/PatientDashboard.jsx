@@ -214,15 +214,15 @@ const PatientDashboard = () => {
 
   return (
     <div className="min-h-screen bg-slate-900 text-white p-4 sm:p-6 md:p-8 flex flex-col justify-between font-sans select-none relative overflow-hidden">
-      {/* Ambient Heart & Beats Watermark Background */}
-      <div className="fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 pointer-events-none opacity-[0.05] z-0 flex flex-col items-center justify-center select-none">
-        <HeartPulse className="w-[500px] h-[500px] sm:w-[650px] sm:h-[650px] text-emerald-400 animate-heartbeat" />
+      {/* Ambient Heart & Beats Watermark Background (Brighter & Vibrant) */}
+      <div className="fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 pointer-events-none opacity-20 z-0 flex flex-col items-center justify-center select-none">
+        <HeartPulse className="w-[500px] h-[500px] sm:w-[650px] sm:h-[650px] text-rose-500 animate-heartbeat drop-shadow-md" />
         <svg className="w-[550px] sm:w-[750px] h-24 -mt-20 text-emerald-400" viewBox="0 0 500 100">
           <path
-            d="M0,50 L120,50 L140,15 L160,85 L180,25 L200,75 L220,50 L500,50"
+            d="M0,50 L120,50 L140,10 L160,90 L180,20 L200,80 L220,50 L500,50"
             fill="none"
             stroke="currentColor"
-            strokeWidth="5"
+            strokeWidth="7"
             strokeLinecap="round"
             strokeLinejoin="round"
           />
