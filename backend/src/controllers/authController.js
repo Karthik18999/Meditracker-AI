@@ -303,6 +303,124 @@ const googleAuth = async (req, res, next) => {
   }
 };
 
+// In-memory store for password reset codes: Map<email, { code, expires }>
+const resetPasswordVerifications = new Map();
+
+/**
+ * @desc    Send password reset OTP verification code
+ * @route   POST /api/auth/forgot-password
+ * @access  Public
+ */
+const forgotPassword = async (req, res, next) => {
+  const { email } = req.body;
+
+  if (!email) {
+    return res.status(400).json({ success: false, message: 'Email address is required.' });
+  }
+
+  try {
+    const cleanEmail = email.toLowerCase().trim();
+    const user = await User.findOne({ email: cleanEmail });
+
+    if (!user) {
+      return res.status(404).json({
+        success: false,
+        message: 'No account found with this email address.',
+      });
+    }
+
+    // Generate 6-digit random numeric OTP code
+    const code = Math.floor(100000 + Math.random() * 900000).toString();
+    const expires = Date.now() + 10 * 60 * 1000; // Code expires in 10 minutes
+
+    resetPasswordVerifications.set(cleanEmail, { code, expires });
+
+    const htmlBody = `
+      <div style="font-family: Arial, sans-serif; max-width: 500px; margin: 0 auto; padding: 20px; border: 1px solid #e2e8f0; border-radius: 12px; background-color: #ffffff;">
+        <h2 style="color: #059669; text-align: center; margin-bottom: 20px;">MediTracker AI Password Reset</h2>
+        <p style="font-size: 15px; color: #334155;">Hello ${user.name},</p>
+        <p style="font-size: 15px; color: #334155;">We received a request to reset your password. Use the verification code below to set a new password:</p>
+        <div style="background-color: #ecfdf5; border: 1px solid #a7f3d0; padding: 18px; text-align: center; border-radius: 12px; margin: 24px 0;">
+          <span style="font-size: 36px; font-weight: 800; letter-spacing: 8px; color: #059669;">${code}</span>
+        </div>
+        <p style="font-size: 13px; color: #64748b;">This code will expire in 10 minutes. If you did not request a password reset, please ignore this email.</p>
+      </div>
+    `;
+
+    // Dispatch email asynchronously in background
+    sendEmail(
+      cleanEmail,
+      'MediTracker AI - Password Reset Code',
+      `Your MediTracker AI password reset code is: ${code}`,
+      htmlBody
+    ).catch(err => console.error('[Notification Service] Password reset OTP error:', err.message));
+
+    res.status(200).json({
+      success: true,
+      message: `Password reset code sent to ${cleanEmail}. Please check your inbox.`,
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
+/**
+ * @desc    Reset password using 6-digit verification code
+ * @route   POST /api/auth/reset-password
+ * @access  Public
+ */
+const resetPassword = async (req, res, next) => {
+  const { email, code, newPassword } = req.body;
+
+  if (!email || !code || !newPassword) {
+    return res.status(400).json({ success: false, message: 'Email, verification code, and new password are required.' });
+  }
+
+  if (newPassword.length < 6) {
+    return res.status(400).json({ success: false, message: 'Password must be at least 6 characters long.' });
+  }
+
+  try {
+    const cleanEmail = email.toLowerCase().trim();
+    const cleanCode = code.toString().trim();
+
+    const record = resetPasswordVerifications.get(cleanEmail);
+
+    if (!record) {
+      return res.status(400).json({ success: false, message: 'No reset request found for this email. Please request a new code.' });
+    }
+
+    if (Date.now() > record.expires) {
+      resetPasswordVerifications.delete(cleanEmail);
+      return res.status(400).json({ success: false, message: 'Reset code has expired. Please request a new code.' });
+    }
+
+    if (record.code !== cleanCode) {
+      return res.status(400).json({ success: false, message: 'Incorrect verification code. Please check and try again.' });
+    }
+
+    const user = await User.findOne({ email: cleanEmail });
+
+    if (!user) {
+      return res.status(404).json({ success: false, message: 'User account not found.' });
+    }
+
+    // Update password
+    user.password = newPassword;
+    await user.save();
+
+    // Clear reset record
+    resetPasswordVerifications.delete(cleanEmail);
+
+    res.status(200).json({
+      success: true,
+      message: 'Password reset successfully! You can now log in with your new password.',
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
 module.exports = {
   sendOTP,
   verifyOTP,
@@ -310,4 +428,6 @@ module.exports = {
   loginUser,
   googleAuth,
   getMe,
+  forgotPassword,
+  resetPassword,
 };

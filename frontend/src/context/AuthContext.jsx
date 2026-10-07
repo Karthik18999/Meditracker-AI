@@ -82,6 +82,14 @@ export const AuthProvider = ({ children }) => {
     }
   };
 
+  const forgotPassword = async (email) => {
+    return await api.post('/auth/forgot-password', { email });
+  };
+
+  const resetPassword = async (email, code, newPassword) => {
+    return await api.post('/auth/reset-password', { email, code, newPassword });
+  };
+
   const logout = () => {
     localStorage.removeItem('token');
     setUser(null);
@@ -99,6 +107,8 @@ export const AuthProvider = ({ children }) => {
         googleLogin,
         sendOTP,
         verifyOTP,
+        forgotPassword,
+        resetPassword,
         logout,
       }}
     >
