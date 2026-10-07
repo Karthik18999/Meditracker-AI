@@ -81,6 +81,7 @@ const GoogleAuthButton = ({ isRegister = false, className = '' }) => {
     try {
       const payload = {
         ...gData,
+        isRegister,
         role: selectedRole || role,
         familyEmail: fEmail || familyEmail,
         patientEmail: pEmail || patientEmail,
@@ -96,11 +97,10 @@ const GoogleAuthButton = ({ isRegister = false, className = '' }) => {
         navigate('/family');
       }
     } catch (err) {
-      if (!isRegister && err.message?.includes('not found')) {
-        setPendingGoogleData(gData);
-        setShowRoleModal(true);
+      if (!isRegister) {
+        setError(err.message || 'No account found with this Google email. Please create an account first.');
       } else {
-        setError(err.message || 'Google authentication failed.');
+        setError(err.message || 'Google registration failed.');
       }
     } finally {
       setSubmitting(false);
@@ -108,25 +108,52 @@ const GoogleAuthButton = ({ isRegister = false, className = '' }) => {
   };
 
   const handlePromptGoogle = () => {
-    if (GOOGLE_CLIENT_ID && window.google) {
+    setError('');
+    if (GOOGLE_CLIENT_ID && window.google?.accounts?.oauth2) {
+      const client = window.google.accounts.oauth2.initTokenClient({
+        client_id: GOOGLE_CLIENT_ID,
+        scope: 'email profile openid',
+        callback: async (tokenResponse) => {
+          if (tokenResponse.error) {
+            setError('Google sign-in popup was cancelled or failed.');
+            return;
+          }
+          if (tokenResponse.access_token) {
+            setSubmitting(true);
+            try {
+              const res = await fetch('https://www.googleapis.com/oauth2/v3/userinfo', {
+                headers: { Authorization: `Bearer ${tokenResponse.access_token}` },
+              });
+              const profile = await res.json();
+              if (profile && profile.email) {
+                const gData = {
+                  email: profile.email,
+                  name: profile.name || profile.given_name || profile.email.split('@')[0],
+                  googleId: profile.sub,
+                  picture: profile.picture,
+                };
+                if (isRegister) {
+                  setPendingGoogleData(gData);
+                  setShowRoleModal(true);
+                } else {
+                  executeGoogleAuth(gData);
+                }
+              } else {
+                setError('Could not verify profile from Google.');
+              }
+            } catch (err) {
+              setError('Failed to retrieve Google user profile.');
+            } finally {
+              setSubmitting(false);
+            }
+          }
+        },
+      });
+      client.requestAccessToken();
+    } else if (GOOGLE_CLIENT_ID && window.google?.accounts?.id) {
       window.google.accounts.id.prompt();
     } else {
-      const userEmail = prompt('Enter your Google account email address:');
-      if (userEmail && userEmail.includes('@')) {
-        const userName = userEmail.split('@')[0];
-        const gData = {
-          email: userEmail,
-          name: userName.charAt(0).toUpperCase() + userName.slice(1),
-          googleId: 'g_' + Date.now(),
-        };
-
-        if (isRegister) {
-          setPendingGoogleData(gData);
-          setShowRoleModal(true);
-        } else {
-          executeGoogleAuth(gData);
-        }
-      }
+      setError('Google Identity Services is loading. Please refresh the page and try again.');
     }
   };
 

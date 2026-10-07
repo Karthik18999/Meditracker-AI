@@ -244,7 +244,7 @@ const getMe = async (req, res, next) => {
  * @access  Public
  */
 const googleAuth = async (req, res, next) => {
-  const { email, name, googleId, role, familyEmail, patientEmail } = req.body;
+  const { email, name, googleId, role, familyEmail, patientEmail, isRegister } = req.body;
 
   if (!email) {
     return res.status(400).json({ success: false, message: 'Google email address is required.' });
@@ -255,6 +255,13 @@ const googleAuth = async (req, res, next) => {
     let user = await User.findOne({ email: cleanEmail });
 
     if (!user) {
+      if (isRegister === false && !role) {
+        return res.status(404).json({
+          success: false,
+          message: 'No account found with this Google email. Please create an account first.',
+        });
+      }
+
       // New user registering via Google
       const randomPassword = Math.random().toString(36).slice(-10) + 'G1!';
       user = await User.create({
