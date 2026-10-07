@@ -238,10 +238,68 @@ const getMe = async (req, res, next) => {
   }
 };
 
+/**
+ * @desc    Authenticate or Register via Google OAuth
+ * @route   POST /api/auth/google
+ * @access  Public
+ */
+const googleAuth = async (req, res, next) => {
+  const { email, name, googleId, role, familyEmail, patientEmail } = req.body;
+
+  if (!email) {
+    return res.status(400).json({ success: false, message: 'Google email address is required.' });
+  }
+
+  try {
+    const cleanEmail = email.toLowerCase().trim();
+    let user = await User.findOne({ email: cleanEmail });
+
+    if (!user) {
+      // New user registering via Google
+      const randomPassword = Math.random().toString(36).slice(-10) + 'G1!';
+      user = await User.create({
+        name: name || cleanEmail.split('@')[0],
+        email: cleanEmail,
+        password: randomPassword,
+        role: role || 'family',
+        familyEmail: (role === 'patient' || role === 'grandpa') ? familyEmail : undefined,
+        patientEmail: role === 'doctor' ? patientEmail : undefined,
+        isVerified: true,
+        googleId,
+      });
+    } else {
+      // Existing user logging in via Google
+      if (googleId && !user.googleId) {
+        user.googleId = googleId;
+        await user.save();
+      }
+    }
+
+    const targetUserId = await resolveTargetUserId(user);
+
+    res.status(200).json({
+      success: true,
+      token: signToken(user._id),
+      user: {
+        id: user._id,
+        name: user.name,
+        email: user.email,
+        role: user.role,
+        familyEmail: user.familyEmail,
+        patientEmail: user.patientEmail,
+        targetUserId,
+      },
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
 module.exports = {
   sendOTP,
   verifyOTP,
   registerUser,
   loginUser,
+  googleAuth,
   getMe,
 };

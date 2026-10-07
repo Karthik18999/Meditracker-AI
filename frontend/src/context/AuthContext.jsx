@@ -67,6 +67,21 @@ export const AuthProvider = ({ children }) => {
     }
   };
 
+  const googleLogin = async (googleData) => {
+    setLoading(true);
+    try {
+      const res = await api.post('/auth/google', googleData);
+      localStorage.setItem('token', res.token);
+      setUser(res.user);
+      return res.user;
+    } catch (error) {
+      setUser(null);
+      throw error;
+    } finally {
+      setLoading(false);
+    }
+  };
+
   const logout = () => {
     localStorage.removeItem('token');
     setUser(null);
@@ -81,6 +96,7 @@ export const AuthProvider = ({ children }) => {
         role: user?.role || null,
         login,
         register,
+        googleLogin,
         sendOTP,
         verifyOTP,
         logout,

@@ -4,6 +4,7 @@ import { useNavigate, Link } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
 import { motion } from 'framer-motion';
 import { HeartPulse, User, Mail, Lock, Link as LinkIcon, ArrowRight } from 'lucide-react';
+import GoogleAuthButton from '../../components/GoogleAuthButton';
 
 const Register = () => {
   const [name, setName] = useState('');
@@ -269,6 +270,14 @@ const Register = () => {
               <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
             </button>
           </form>
+
+          <div className="my-4 flex items-center">
+            <div className="flex-grow border-t border-slate-200 dark:border-slate-800"></div>
+            <span className="flex-shrink mx-4 text-xs uppercase font-extrabold text-slate-400">OR</span>
+            <div className="flex-grow border-t border-slate-200 dark:border-slate-800"></div>
+          </div>
+
+          <GoogleAuthButton isRegister={true} />
 
           <div className="mt-6 text-center border-t border-slate-200/50 dark:border-slate-800/50 pt-5">
             <p className="text-sm text-slate-500 dark:text-slate-400">
